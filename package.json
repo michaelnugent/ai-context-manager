@@ -20,20 +20,23 @@
       {
         "command": "ai-context-manager.launch",
         "title": "Launch AI Context Manager"
+      },
+      {
+        "command": "ai-context-manager.addToContext",
+        "title": "Add files to context"
       }
     ],
     "menus": {
+      "explorer/context": [
+        {
+          "command": "ai-context-manager.addToContext",
+          "group": "navigation"
+        }
+      ],
       "editor/context": [
         {
           "command": "ai-context-manager.launch",
           "when": "editorTextFocus",
-          "group": "navigation"
-        }
-      ],
-      "explorer/context": [
-        {
-          "command": "ai-context-manager.addToContext",
-          "when": "resourceScheme == 'file'",
           "group": "navigation"
         }
       ]

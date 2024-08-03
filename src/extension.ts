@@ -24,10 +24,9 @@ export function activate(context: vscode.ExtensionContext) {
 		// Display a message box to the user
 		vscode.window.showInformationMessage('Hello World from AI Context Manager!');
 	});
+	context.subscriptions.push(disposable);
 
 	registerLaunchCommand(context);
-
-	context.subscriptions.push(disposable);
 }
 
 //
@@ -44,6 +43,13 @@ export function activate(context: vscode.ExtensionContext) {
 export function deactivate() { }
 
 function registerLaunchCommand(context: vscode.ExtensionContext) {
+	console.log('registering launch command');
+	context.subscriptions.push(
+		vscode.commands.registerCommand('ai-context-manager.addToContext', () => {
+			vscode.window.showInformationMessage('Adding to context!');
+		})
+	);
+
 	context.subscriptions.push(
 		vscode.commands.registerCommand('ai-context-manager.launch', () => {
 			const activeEditor = vscode.window.activeTextEditor;
