@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Context Manager</title>
+    <link rel="stylesheet" href="<%= cssUri %>">
+</head>
+
+<body>
+    <h1>Welcome to AI Context Manager!</h1>
+    <button id="indexButton">Index</button>
+
+    <div class="tree-view">
+        <% treeData.forEach((item, index)=> { %>
+            <div class="tree-item">
+                <div class="tree-item-header">
+                    <input type="checkbox" id="enable-<%= index %>" <%=item.enabled ? 'checked' : '' %>>
+                    <span class="toggle-btn" data-id="<%= index %>">▶</span>
+                    <label for="enable-<%= index %>">
+                        <%= item.title %>
+                    </label>
+                    <span class="token-count">(~<%= item.tokenCount %> tokens)</span>
+                    <span class="remove-btn" data-id="<%= index %>">❌</span>
+                </div>
+                <div class="tree-item-content" id="content-<%= index %>" style="display: none;">
+                    <% item.children.forEach(child=> { %>
+                        <div>
+                            <%= child %>
+                        </div>
+                        <% }) %>
+                </div>
+            </div>
+            <% }) %>
+    </div>
+
+    <script>
+        const vscode = acquireVsCodeApi();
+        document.getElementById('indexButton').addEventListener('click', () => {
+            vscode.postMessage({ command: 'index' });
+        });
+
+        document.querySelectorAll('.tree-item-header input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', (e) => {
+                const itemId = e.target.id.split('-')[1];
+                vscode.postMessage({ command: 'toggleItem', itemId: itemId, enabled: e.target.checked });
+            });
+        });
+
+        document.querySelectorAll('.remove-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const itemId = e.target.getAttribute('data-id');
+                vscode.postMessage({ command: 'removeItem', itemId: itemId });
+            });
+        });
+
+        document.querySelectorAll('.toggle-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const itemId = e.target.getAttribute('data-id');
+                const content = document.getElementById(`content-${itemId}`);
+                if (content.style.display === 'none') {
+                    content.style.display = 'block';
+                    e.target.textContent = '▼';
+                } else {
+                    content.style.display = 'none';
+                    e.target.textContent = '▶';
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

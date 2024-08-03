@@ -23,10 +23,17 @@
       }
     ],
     "menus": {
-      "view/item/context": [
+      "editor/context": [
         {
           "command": "ai-context-manager.launch",
           "when": "editorTextFocus",
+          "group": "navigation"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "ai-context-manager.addToContext",
+          "when": "resourceScheme == 'file'",
           "group": "navigation"
         }
       ]
@@ -47,6 +54,7 @@
     "test": "vscode-test"
   },
   "devDependencies": {
+    "@types/ejs": "^3.1.5",
     "@types/mocha": "^10.0.7",
     "@types/node": "20.x",
     "@types/vscode": "^1.91.0",
@@ -60,6 +68,7 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
-    "ejs": "^3.1.10"
+    "ejs": "^3.1.10",
+    "gpt-tokenizer": "^2.2.1"
   }
 }

@@ -1,0 +1,34 @@
+.tree-view {
+    font-family: Arial, sans-serif;
+}
+
+.tree-item {
+    margin-bottom: 10px;
+}
+
+.tree-item-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.tree-item-content {
+    margin-left: 20px;
+}
+
+.remove-btn {
+    color: red;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.token-count {
+    margin-left: 10px;
+    color: #666;
+}
+
+.toggle-btn {
+    cursor: pointer;
+    margin-right: 5px;
+    user-select: none;
+}
