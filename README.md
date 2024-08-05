@@ -6,6 +6,10 @@ The "AI Context Manager" is a Visual Studio Code extension designed to enhance t
 
 Release?  This barely works so far.
 
+### 0.0.2
+
+OpenAI mini-working
+
 ### 0.0.1
 
 Test release, MVP workflow working.
