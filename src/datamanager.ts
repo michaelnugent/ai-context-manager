@@ -1,4 +1,5 @@
 import { EventEmitter } from 'events';
+import { countTokensInFile } from './utils';
 
 interface Metadata {
     enabled: boolean;
@@ -132,12 +133,7 @@ export class DataManager {
 
     public async rmItem(category: string, item: string): Promise<void> {
         try {
-            if (!(category in this.data)) {
-                throw new Error(`Category '${category}' does not exist`);
-            }
-            if (!(item in this.data[category].items)) {
-                throw new Error(`Item '${item}' does not exist in category '${category}'`);
-            }
+            this.checkCategoryAndItemExist(category, item);
             delete this.data[category].items[item];
             this.notifyChange();
         } catch (error) {
@@ -298,6 +294,25 @@ export class DataManager {
         }
         if (!(item in this.data[category].items)) {
             throw new Error(`Item '${item}' does not exist in category '${category}'`);
+        }
+    }
+
+    public async setItemEnabled(category: string, item: string, enabled: boolean): Promise<void> {
+        try {
+            this.checkCategoryAndItemExist(category, item);
+            this.data[category].items[item].metadata.enabled = enabled;
+            if (enabled) {
+                // Update token count when item is enabled again
+                const filePath = item; // Assuming item is the file path
+                const tokens = await countTokensInFile(filePath);
+                this.data[category].items[item].metadata.tokenCount = tokens;
+            } else {
+                this.data[category].items[item].metadata.tokenCount = 0;
+            }
+            this.notifyChange();
+        } catch (error) {
+            console.error(`Failed to set item '${item}' enabled status in category '${category}':`, error);
+            throw error;
         }
     }
 }

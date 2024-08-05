@@ -13,17 +13,27 @@ document.getElementById('toggleTreeViewButton').addEventListener('click', () => 
     adjustOutputArea();
 });
 
-document.getElementById('sendButton').addEventListener('click', () => {
+document.getElementById('sendButton').addEventListener('click', async () => {
     const input = document.getElementById('chatInput');
-    vscode.postMessage({ command: 'sendMessage', text: input.value });
+    const userMessage = input.value;
+    if (userMessage.trim() === '') {
+        return;
+    }
+
+    // Send the message to the Ollama API and get the response
+    const responseText = await sendOllamaRequest(userMessage);
+
+    // Display the response in the output area
+    const outputArea = document.getElementById('outputArea');
+    outputArea.textContent += `User: ${userMessage}\nOllama: ${responseText}\n\n`;
+    outputArea.scrollTop = outputArea.scrollHeight; // Scroll to the bottom
+
     input.value = '';
 });
 
 document.getElementById('chatInput').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
-        const input = document.getElementById('chatInput');
-        vscode.postMessage({ command: 'sendMessage', text: input.value });
-        input.value = '';
+        document.getElementById('sendButton').click();
     }
 });
 
@@ -44,6 +54,13 @@ window.addEventListener('message', event => {
 
 function updateTreeView(treeData) {
     const treeView = document.getElementById('treeView');
+
+    // Preserve the current state of the tree
+    const state = {};
+    document.querySelectorAll('.tree-item-content').forEach(content => {
+        state[content.id] = content.style.display;
+    });
+
     treeView.innerHTML = ''; // Clear current tree view
 
     Object.keys(treeData).forEach((category) => {
@@ -62,7 +79,7 @@ function updateTreeView(treeData) {
         const toggleBtn = document.createElement('span');
         toggleBtn.classList.add('toggle-btn');
         toggleBtn.dataset.id = category;
-        toggleBtn.textContent = '▶';
+        toggleBtn.textContent = state[`content-${category}`] === 'block' ? '▼' : '▶';
         categoryHeader.appendChild(toggleBtn);
 
         const categoryLabel = document.createElement('label');
@@ -72,26 +89,54 @@ function updateTreeView(treeData) {
 
         const tokenCount = document.createElement('span');
         tokenCount.classList.add('token-count');
-        tokenCount.textContent = `(~${treeData[category].metadata.tokenCount} tokens)`;
+        tokenCount.id = `category-token-count-${category}`;
+        tokenCount.textContent = `(~${calculateCategoryTokenCount(treeData[category])} tokens)`;
         categoryHeader.appendChild(tokenCount);
-
-        const removeBtn = document.createElement('span');
-        removeBtn.classList.add('remove-btn');
-        removeBtn.dataset.id = category;
-        removeBtn.textContent = '❌';
-        categoryHeader.appendChild(removeBtn);
 
         categoryDiv.appendChild(categoryHeader);
 
         const categoryContent = document.createElement('div');
         categoryContent.classList.add('tree-item-content');
         categoryContent.id = `content-${category}`;
-        categoryContent.style.display = 'none';
+        categoryContent.style.display = state[`content-${category}`] || 'none';
 
         Object.keys(treeData[category].items).forEach((item) => {
             const itemDiv = document.createElement('div');
-            itemDiv.textContent = item;
+            itemDiv.classList.add('tree-item');
+
+            const itemCheckbox = document.createElement('input');
+            itemCheckbox.type = 'checkbox';
+            itemCheckbox.id = `enable-item-${item}`;
+            itemCheckbox.checked = treeData[category].items[item].metadata.enabled;
+            itemDiv.appendChild(itemCheckbox);
+
+            const itemLabel = document.createElement('label');
+            itemLabel.htmlFor = `enable-item-${item}`;
+            itemLabel.textContent = item;
+            itemDiv.appendChild(itemLabel);
+
+            const itemTokenCount = document.createElement('span');
+            itemTokenCount.classList.add('token-count');
+            itemTokenCount.id = `item-token-count-${category}-${item}`;
+            itemTokenCount.textContent = `(~${treeData[category].items[item].metadata.tokenCount} tokens)`;
+            itemDiv.appendChild(itemTokenCount);
+
+            const itemRemoveBtn = document.createElement('span');
+            itemRemoveBtn.classList.add('remove-btn');
+            itemRemoveBtn.dataset.id = item;
+            itemRemoveBtn.textContent = '❌';
+            itemDiv.appendChild(itemRemoveBtn);
+
             categoryContent.appendChild(itemDiv);
+
+            // Add event listeners
+            itemCheckbox.addEventListener('change', (e) => {
+                vscode.postMessage({ command: 'toggleItem', category: category, item: item, enabled: e.target.checked });
+            });
+
+            itemRemoveBtn.addEventListener('click', (e) => {
+                vscode.postMessage({ command: 'removeItem', category: category, item: item });
+            });
         });
 
         categoryDiv.appendChild(categoryContent);
@@ -112,11 +157,11 @@ function updateTreeView(treeData) {
         categoryCheckbox.addEventListener('change', (e) => {
             vscode.postMessage({ command: 'toggleCategory', category: category, enabled: e.target.checked });
         });
-
-        removeBtn.addEventListener('click', (e) => {
-            vscode.postMessage({ command: 'removeCategory', category: category });
-        });
     });
+}
+
+function calculateCategoryTokenCount(category) {
+    return Object.values(category.items).reduce((sum, item) => sum + (item.metadata.enabled ? item.metadata.tokenCount : 0), 0);
 }
 
 function adjustOutputArea() {

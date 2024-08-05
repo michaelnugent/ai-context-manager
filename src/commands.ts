@@ -3,6 +3,7 @@ import * as path from 'path';
 import * as ejs from 'ejs';
 import { DataManager } from './datamanager';
 import { handleIndexCommand } from './handlers';
+import { countTokensInFile } from './utils';
 
 export async function initializeDataManager() {
     try {
@@ -19,13 +20,16 @@ export function registerLaunchCommand(context: vscode.ExtensionContext) {
     console.log('registering launch command');
     context.subscriptions.push(
         vscode.commands.registerCommand('ai-context-manager.addToContext', async (uri: vscode.Uri, uris: vscode.Uri[]) => {
+            const datamanager = await DataManager.getInstance();
             if (uris && uris.length > 0) {
-                const datamanager = await DataManager.getInstance();
                 for (const selectedUri of uris) {
                     await datamanager.addItem("By Request", selectedUri.fsPath);
+                    await datamanager.setTokenCount("By Request", selectedUri.fsPath, await countTokensInFile(selectedUri.fsPath));
                     vscode.window.showInformationMessage(`Adding to context: ${selectedUri.fsPath}`);
                 }
             } else {
+                await datamanager.addItem("By Request", uri.fsPath);
+                await datamanager.setTokenCount("By Request", uri.fsPath, await countTokensInFile(uri.fsPath));
                 vscode.window.showInformationMessage(`Adding to context: ${uri.fsPath}`);
             }
         })
@@ -82,11 +86,24 @@ export function registerLaunchCommand(context: vscode.ExtensionContext) {
                             break;
                         case 'getTreeData':
                             // Get tree data from DataManager and send it to the webview
+                            console.log("want treeview!");
                             (async () => {
                                 const dataManager = await DataManager.getInstance();
                                 const treeData = await dataManager.asJson();
                                 panel.webview.postMessage({ command: 'updateTreeView', treeData: JSON.parse(treeData) });
                             })();
+                            break;
+                        case 'toggleItem':
+                            const dataManager = await DataManager.getInstance();
+                            await dataManager.setItemEnabled(message.category, message.item, message.enabled);
+                            const updatedTreeData = await dataManager.asJson();
+                            panel.webview.postMessage({ command: 'updateTreeView', treeData: JSON.parse(updatedTreeData) });
+                            break;
+                        case 'removeItem':
+                            const dataManagerRemove = await DataManager.getInstance();
+                            await dataManagerRemove.rmItem(message.category, message.item);
+                            const updatedTreeDataRemove = await dataManagerRemove.asJson();
+                            panel.webview.postMessage({ command: 'updateTreeView', treeData: JSON.parse(updatedTreeDataRemove) });
                             break;
                         default:
                             console.log('Unknown command:', message.command);
