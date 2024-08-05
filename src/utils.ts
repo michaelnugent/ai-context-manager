@@ -185,8 +185,9 @@ export async function sendOpenAIRequest(userMessage: string): Promise<string> {
             apiKey: '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',
         });
 
+        // model: "gpt-4o-mini-2024-07-18",
         const response = await client.chat.completions.create({
-            model: "gpt-4o-mini-2024-07-18",
+            model: "gpt-4o",
             messages: [{ role: "user", content: userMessage }],
             temperature: 0.2,
         });

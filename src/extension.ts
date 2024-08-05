@@ -1,6 +1,9 @@
 //
+// BUGS:
+// -When navigating away from the context manager pane,
+//  the output window is cleared.  This should keep the previous data.
+//
 // TODO:
-// -Load/save trees
 // -Preferences
 //  -Additional static context from user
 //  -load/save preferences
@@ -8,7 +11,7 @@
 //  -Add openai wrapper
 //  -Add anthropic wrapper
 //  -Add copilot wrapper
-// -add previous conversation to prompt
+// -Add previous conversation to prompt
 // -Subtotal total estimate for datatree, deduped
 // -Total tokens for subtotal + user input + previous conversation
 // -Prettier - better design overall
