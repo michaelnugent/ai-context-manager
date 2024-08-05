@@ -27,6 +27,13 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(disposable);
 
 	registerLaunchCommand(context);
+
+	// Call the async initialization function
+	initializeDataManager().then(() => {
+		console.log('DataManager initialized successfully.');
+	}).catch((error) => {
+		console.error('Failed to initialize DataManager:', error);
+	});
 }
 
 //
@@ -42,14 +49,27 @@ export function activate(context: vscode.ExtensionContext) {
 // This method is called when your extension is deactivated
 export function deactivate() { }
 
+async function initializeDataManager() {
+	try {
+		const datamanager = await DataManager.getInstance();
+		await datamanager.addCategory("By Request");
+		await datamanager.addCategory("By Reference");
+		await datamanager.addCategory("By Directory");
+	} catch (error) {
+		console.error('Failed to initialize DataManager:', error);
+	}
+}
+
 function registerLaunchCommand(context: vscode.ExtensionContext) {
 	console.log('registering launch command');
 	context.subscriptions.push(
-		vscode.commands.registerCommand('ai-context-manager.addToContext', (uri: vscode.Uri, uris: vscode.Uri[]) => {
+		vscode.commands.registerCommand('ai-context-manager.addToContext', async (uri: vscode.Uri, uris: vscode.Uri[]) => {
 			if (uris && uris.length > 0) {
-				uris.forEach(selectedUri => {
+				const datamanager = await DataManager.getInstance();
+				for (const selectedUri of uris) {
+					await datamanager.addItem("By Request", selectedUri.fsPath);
 					vscode.window.showInformationMessage(`Adding to context: ${selectedUri.fsPath}`);
-				});
+				}
 			} else {
 				vscode.window.showInformationMessage(`Adding to context: ${uri.fsPath}`);
 			}
@@ -149,7 +169,6 @@ export async function handleIndexCommand(panel: vscode.WebviewPanel, extensionPa
 	console.log('references:', references);
 
 	const refcat = "By Reference";
-	await datamanager.addCategory(refcat);
 	references.forEach(async (ref) => {
 		const tokens = await countTokensInFile(ref);
 		await datamanager.addItem(refcat, ref);
@@ -161,7 +180,6 @@ export async function handleIndexCommand(panel: vscode.WebviewPanel, extensionPa
 	console.log('dirfiles:', dirfiles);
 
 	const dircat = "By Directory";
-	await datamanager.addCategory(dircat);
 	dirfiles.forEach(async (file) => {
 		const tokens = await countTokensInFile(file);
 		await datamanager.addItem(dircat, file);
