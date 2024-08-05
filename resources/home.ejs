@@ -15,28 +15,7 @@
         <button id="indexButton">Index</button>
         <button id="toggleTreeViewButton">Toggle Tree View</button>
 
-        <div id="treeView" class="tree-view">
-            <% treeData.forEach((item, index)=> { %>
-                <div class="tree-item">
-                    <div class="tree-item-header">
-                        <input type="checkbox" id="enable-<%= index %>" <%=item.enabled ? 'checked' : '' %>>
-                        <span class="toggle-btn" data-id="<%= index %>">▶</span>
-                        <label for="enable-<%= index %>">
-                            <%= item.title %>
-                        </label>
-                        <span class="token-count">(~<%= item.tokenCount %> tokens)</span>
-                        <span class="remove-btn" data-id="<%= index %>">❌</span>
-                    </div>
-                    <div class="tree-item-content" id="content-<%= index %>" style="display: none;">
-                        <% item.children.forEach(child=> { %>
-                            <div>
-                                <%= child %>
-                            </div>
-                            <% }) %>
-                    </div>
-                </div>
-                <% }) %>
-        </div>
+        <div id="treeView" class="tree-view"></div>
 
         <!-- Text output area -->
         <div id="outputArea" class="output-area"></div>
@@ -64,34 +43,6 @@
             adjustOutputArea();
         });
 
-        document.querySelectorAll('.tree-item-header input[type="checkbox"]').forEach(checkbox => {
-            checkbox.addEventListener('change', (e) => {
-                const itemId = e.target.id.split('-')[1];
-                vscode.postMessage({ command: 'toggleItem', itemId: itemId, enabled: e.target.checked });
-            });
-        });
-
-        document.querySelectorAll('.remove-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const itemId = e.target.getAttribute('data-id');
-                vscode.postMessage({ command: 'removeItem', itemId: itemId });
-            });
-        });
-
-        document.querySelectorAll('.toggle-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const itemId = e.target.getAttribute('data-id');
-                const content = document.getElementById(`content-${itemId}`);
-                if (content.style.display === 'none') {
-                    content.style.display = 'block';
-                    e.target.textContent = '▼';
-                } else {
-                    content.style.display = 'none';
-                    e.target.textContent = '▶';
-                }
-            });
-        });
-
         document.getElementById('sendButton').addEventListener('click', () => {
             const input = document.getElementById('chatInput');
             vscode.postMessage({ command: 'sendMessage', text: input.value });
@@ -115,8 +66,88 @@
                     outputArea.textContent += message.text + '\n';
                     outputArea.scrollTop = outputArea.scrollHeight; // Scroll to the bottom
                     break;
+                case 'updateTreeView':
+                    updateTreeView(message.treeData);
+                    break;
             }
         });
+
+        function updateTreeView(treeData) {
+            const treeView = document.getElementById('treeView');
+            treeView.innerHTML = ''; // Clear current tree view
+
+            Object.keys(treeData).forEach((category) => {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.classList.add('tree-item');
+
+                const categoryHeader = document.createElement('div');
+                categoryHeader.classList.add('tree-item-header');
+
+                const categoryCheckbox = document.createElement('input');
+                categoryCheckbox.type = 'checkbox';
+                categoryCheckbox.id = `enable-${category}`;
+                categoryCheckbox.checked = treeData[category].metadata.enabled;
+                categoryHeader.appendChild(categoryCheckbox);
+
+                const toggleBtn = document.createElement('span');
+                toggleBtn.classList.add('toggle-btn');
+                toggleBtn.dataset.id = category;
+                toggleBtn.textContent = '▶';
+                categoryHeader.appendChild(toggleBtn);
+
+                const categoryLabel = document.createElement('label');
+                categoryLabel.htmlFor = `enable-${category}`;
+                categoryLabel.textContent = category;
+                categoryHeader.appendChild(categoryLabel);
+
+                const tokenCount = document.createElement('span');
+                tokenCount.classList.add('token-count');
+                tokenCount.textContent = `(~${treeData[category].metadata.tokenCount} tokens)`;
+                categoryHeader.appendChild(tokenCount);
+
+                const removeBtn = document.createElement('span');
+                removeBtn.classList.add('remove-btn');
+                removeBtn.dataset.id = category;
+                removeBtn.textContent = '❌';
+                categoryHeader.appendChild(removeBtn);
+
+                categoryDiv.appendChild(categoryHeader);
+
+                const categoryContent = document.createElement('div');
+                categoryContent.classList.add('tree-item-content');
+                categoryContent.id = `content-${category}`;
+                categoryContent.style.display = 'none';
+
+                Object.keys(treeData[category].items).forEach((item) => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.textContent = item;
+                    categoryContent.appendChild(itemDiv);
+                });
+
+                categoryDiv.appendChild(categoryContent);
+                treeView.appendChild(categoryDiv);
+
+                // Add event listeners
+                toggleBtn.addEventListener('click', (e) => {
+                    const content = document.getElementById(`content-${category}`);
+                    if (content.style.display === 'none') {
+                        content.style.display = 'block';
+                        e.target.textContent = '▼';
+                    } else {
+                        content.style.display = 'none';
+                        e.target.textContent = '▶';
+                    }
+                });
+
+                categoryCheckbox.addEventListener('change', (e) => {
+                    vscode.postMessage({ command: 'toggleCategory', category: category, enabled: e.target.checked });
+                });
+
+                removeBtn.addEventListener('click', (e) => {
+                    vscode.postMessage({ command: 'removeCategory', category: category });
+                });
+            });
+        }
 
         function adjustOutputArea() {
             const treeView = document.getElementById('treeView');
@@ -130,6 +161,9 @@
 
         window.addEventListener('resize', adjustOutputArea);
         adjustOutputArea(); // Initial call
+
+        // Request initial tree data from the extension
+        vscode.postMessage({ command: 'getTreeData' });
     </script>
 </body>
 

@@ -170,4 +170,43 @@ suite('DataManager Test Suite', () => {
         assert.strictEqual(items.includes('TestItem'), true, 'Item should be parsed from JSON');
     });
 
+    test('Event listener test', async () => {
+        const dataManager = await DataManager.getInstance();
+        let eventTriggered = false;
+
+        dataManager.on('dataChanged', (data) => {
+            eventTriggered = true;
+        });
+
+        await dataManager.addCategory('TestCategory');
+        assert.strictEqual(eventTriggered, true, 'dataChanged event should be triggered when category is added');
+    });
+
+    test('Notify change on item addition', async () => {
+        const dataManager = await DataManager.getInstance();
+        let eventTriggered = false;
+
+        dataManager.on('dataChanged', (data) => {
+            eventTriggered = true;
+        });
+
+        await dataManager.addCategory('TestCategory');
+        await dataManager.addItem('TestCategory', 'TestItem');
+        assert.strictEqual(eventTriggered, true, 'dataChanged event should be triggered when item is added');
+    });
+
+    test('Notify change on item removal', async () => {
+        const dataManager = await DataManager.getInstance();
+        let eventTriggered = false;
+
+        dataManager.on('dataChanged', (data) => {
+            eventTriggered = true;
+        });
+
+        await dataManager.addCategory('TestCategory');
+        await dataManager.addItem('TestCategory', 'TestItem');
+        await dataManager.rmItem('TestCategory', 'TestItem');
+        assert.strictEqual(eventTriggered, true, 'dataChanged event should be triggered when item is removed');
+    });
+
 });

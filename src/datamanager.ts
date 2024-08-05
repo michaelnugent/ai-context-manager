@@ -1,3 +1,5 @@
+import { EventEmitter } from 'events';
+
 interface Metadata {
     enabled: boolean;
     tokenCount: number;
@@ -21,9 +23,11 @@ export class DataManager {
     private static instance: DataManager | null = null;
     private static initializationPromise: Promise<DataManager> | null = null;
     private data: Data;
+    private eventEmitter: EventEmitter;
 
     private constructor() {
         this.data = {};
+        this.eventEmitter = new EventEmitter();
     }
 
     public static async getInstance(): Promise<DataManager> {
@@ -55,6 +59,14 @@ export class DataManager {
         }
     }
 
+    public on(event: string, listener: (...args: any[]) => void) {
+        this.eventEmitter.on(event, listener);
+    }
+
+    private notifyChange() {
+        this.eventEmitter.emit('dataChanged', this.data);
+    }
+
     public async addCategory(category: string): Promise<void> {
         try {
             if (this.data[category]) {
@@ -67,6 +79,7 @@ export class DataManager {
                 },
                 items: {},
             };
+            this.notifyChange();
         } catch (error) {
             console.error(`Failed to add category '${category}':`, error);
             throw error;
@@ -88,6 +101,7 @@ export class DataManager {
                 throw new Error(`Category '${category}' does not exist`);
             }
             delete this.data[category];
+            this.notifyChange();
         } catch (error) {
             console.error(`Failed to remove category '${category}':`, error);
             throw error;
@@ -109,6 +123,7 @@ export class DataManager {
                     dirty: false,
                 },
             };
+            this.notifyChange();
         } catch (error) {
             console.error(`Failed to add item '${item}' to category '${category}':`, error);
             throw error;
@@ -124,6 +139,7 @@ export class DataManager {
                 throw new Error(`Item '${item}' does not exist in category '${category}'`);
             }
             delete this.data[category].items[item];
+            this.notifyChange();
         } catch (error) {
             console.error(`Failed to remove item '${item}' from category '${category}':`, error);
             throw error;
@@ -148,6 +164,7 @@ export class DataManager {
                 throw new Error(`Category '${category}' does not exist`);
             }
             this.data[category].metadata.enabled = true;
+            this.notifyChange();
         } catch (error) {
             console.error(`Failed to enable category '${category}':`, error);
             throw error;
@@ -160,6 +177,7 @@ export class DataManager {
                 throw new Error(`Category '${category}' does not exist`);
             }
             this.data[category].metadata.enabled = false;
+            this.notifyChange();
         } catch (error) {
             console.error(`Failed to disable category '${category}':`, error);
             throw error;
@@ -182,6 +200,7 @@ export class DataManager {
         try {
             this.checkCategoryAndItemExist(category, item);
             this.data[category].items[item].metadata.enabled = true;
+            this.notifyChange();
         } catch (error) {
             console.error(`Failed to enable item '${item}' in category '${category}':`, error);
             throw error;
@@ -192,6 +211,7 @@ export class DataManager {
         try {
             this.checkCategoryAndItemExist(category, item);
             this.data[category].items[item].metadata.enabled = false;
+            this.notifyChange();
         } catch (error) {
             console.error(`Failed to disable item '${item}' in category '${category}':`, error);
             throw error;
@@ -215,6 +235,7 @@ export class DataManager {
                 throw new Error('Token count cannot be negative');
             }
             this.data[category].items[item].metadata.tokenCount = count;
+            this.notifyChange();
         } catch (error) {
             console.error(`Failed to set token count for item '${item}' in category '${category}':`, error);
             throw error;
@@ -235,6 +256,7 @@ export class DataManager {
         try {
             this.checkCategoryAndItemExist(category, item);
             this.data[category].items[item].metadata.dirty = dirty;
+            this.notifyChange();
         } catch (error) {
             console.error(`Failed to set dirty status for item '${item}' in category '${category}':`, error);
             throw error;
@@ -263,6 +285,7 @@ export class DataManager {
     public async fromJson(json: string): Promise<void> {
         try {
             this.data = JSON.parse(json);
+            this.notifyChange();
         } catch (error) {
             console.error('Failed to parse JSON data:', error);
             throw new Error('Failed to parse JSON data');

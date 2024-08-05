@@ -97,30 +97,24 @@ function registerLaunchCommand(context: vscode.ExtensionContext) {
 			const cssUri = panel.webview.asWebviewUri(cssPath);
 			const templatePath = path.join(context.extensionPath, 'resources', 'home.ejs');
 
-			// Sample tree data - replace this with your actual data
-			const treeData = [
-				{
-					title: "Detected Files",
-					enabled: true,
-					tokenCount: 1000,
-					children: ["Child A", "Child B", "Child C"]
-				},
-				{
-					title: "Item 2",
-					enabled: false,
-					tokenCount: 500,
-					children: ["Child A", "Child B"]
-				}
-			];
+			(async () => {
+				const dataManager = await DataManager.getInstance();
+				dataManager.on('dataChanged', async () => {
+					const treeData = await dataManager.asJson();
+					panel.webview.postMessage({ command: 'updateTreeView', treeData: JSON.parse(treeData) });
+				});
 
-			ejs.renderFile(templatePath, { cssUri, treeData }, (err, html) => {
-				if (err) {
-					console.error('Error rendering EJS template:', err);
-					panel.webview.html = `<h1>Error loading content</h1>`;
-					return;
-				}
-				panel.webview.html = html;
-			});
+				const treeData = JSON.parse(await dataManager.asJson());
+
+				ejs.renderFile(templatePath, { cssUri, treeData }, (err, html) => {
+					if (err) {
+						console.error('Error rendering EJS template:', err);
+						panel.webview.html = `<h1>Error loading content</h1>`;
+						return;
+					}
+					panel.webview.html = html;
+				});
+			})();
 
 			panel.webview.onDidReceiveMessage(
 				async message => {
@@ -129,6 +123,14 @@ function registerLaunchCommand(context: vscode.ExtensionContext) {
 							console.log('DevBucketViewProvider index');
 							console.log('workspace:', vscode.workspace);
 							await handleIndexCommand(panel, context.extensionPath, activeEditor);
+							break;
+						case 'getTreeData':
+							// Get tree data from DataManager and send it to the webview
+							(async () => {
+								const dataManager = await DataManager.getInstance();
+								const treeData = await dataManager.asJson();
+								panel.webview.postMessage({ command: 'updateTreeView', treeData: JSON.parse(treeData) });
+							})();
 							break;
 						default:
 							console.log('Unknown command:', message.command);
@@ -156,7 +158,7 @@ export async function handleIndexCommand(panel: vscode.WebviewPanel, extensionPa
 	if (!document) {
 		vscode.window.showErrorMessage(`Failed to open the document: ${filepath}`);
 		// TODO valid return value
-		return { "language": null, "symbols": null };
+		return { "language": "none", "symbols": [] };
 	}
 
 	const metadata = await getFileMetadata(activeEditor.document);
@@ -173,7 +175,7 @@ export async function handleIndexCommand(panel: vscode.WebviewPanel, extensionPa
 		const tokens = await countTokensInFile(ref);
 		await datamanager.addItem(refcat, ref);
 		await datamanager.setTokenCount(refcat, ref, tokens);
-		console.log(ref + ' tokens:', await datamanager.getTokenCount(refcat, ref));
+		//console.log(ref + ' tokens:', await datamanager.getTokenCount(refcat, ref));
 	}
 
 	const dirfiles = await findFilesInSameDirectory(path.dirname(document.uri.fsPath));
@@ -184,7 +186,7 @@ export async function handleIndexCommand(panel: vscode.WebviewPanel, extensionPa
 		const tokens = await countTokensInFile(file);
 		await datamanager.addItem(dircat, file);
 		await datamanager.setTokenCount(dircat, file, tokens);
-		console.log(file + ' tokens:', await datamanager.getTokenCount(dircat, file));
+		//console.log(file + ' tokens:', await datamanager.getTokenCount(dircat, file));
 	}
 
 	const dmj = await datamanager.asJson();
