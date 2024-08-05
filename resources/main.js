@@ -42,6 +42,7 @@ window.addEventListener('message', event => {
             const outputArea = document.getElementById('outputArea');
             outputArea.textContent += message.text + '\n';
             outputArea.scrollTop = outputArea.scrollHeight; // Scroll to the bottom
+            storeOutputData(outputArea.textContent); // Store the output data
             break;
         case 'updateTreeView':
             updateTreeView(message.treeData);
@@ -170,6 +171,23 @@ function adjustOutputArea() {
         outputArea.style.height = 'calc(100% - 250px)'; // Adjust height accordingly
     }
 }
+
+function storeOutputData(data) {
+    vscode.setState({ outputData: data });
+}
+
+// Retrieve output data from VS Code state
+function retrieveOutputData() {
+    const state = vscode.getState();
+    return state ? state.outputData : '';
+}
+
+// Restore output data on load
+window.addEventListener('load', () => {
+    const outputArea = document.getElementById('outputArea');
+    outputArea.textContent = retrieveOutputData();
+    outputArea.scrollTop = outputArea.scrollHeight; // Scroll to the bottom
+});
 
 window.addEventListener('resize', adjustOutputArea);
 adjustOutputArea(); // Initial call
