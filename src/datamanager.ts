@@ -1,3 +1,5 @@
+import * as fs from 'fs';
+
 import { EventEmitter } from 'events';
 import { countTokensInFile } from './utils';
 
@@ -68,6 +70,10 @@ export class DataManager {
         this.eventEmitter.emit('dataChanged', this.data);
     }
 
+    public async getData(): Promise<Data> {
+        return this.data;
+    }
+
     public async addCategory(category: string): Promise<void> {
         try {
             if (this.data[category]) {
@@ -116,6 +122,10 @@ export class DataManager {
             }
             if (this.data[category].items[item]) {
                 throw new Error(`Item '${item}' already exists in category '${category}'`);
+            }
+            const stats = await fs.promises.stat(item);
+            if (!stats.isFile()) {
+                throw new Error(`Item '${item}' is not a file`);
             }
             this.data[category].items[item] = {
                 metadata: {

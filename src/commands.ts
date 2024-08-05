@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as ejs from 'ejs';
 import { DataManager } from './datamanager';
 import { handleIndexCommand } from './handlers';
-import { countTokensInFile } from './utils';
+import { countTokensInFile, gatherDataForPrompt, renderPromptTemplate, sendOllamaRequest } from './utils';
 
 export async function initializeDataManager() {
     try {
@@ -86,12 +86,24 @@ export function registerLaunchCommand(context: vscode.ExtensionContext) {
                             break;
                         case 'getTreeData':
                             // Get tree data from DataManager and send it to the webview
-                            console.log("want treeview!");
                             (async () => {
                                 const dataManager = await DataManager.getInstance();
                                 const treeData = await dataManager.asJson();
                                 panel.webview.postMessage({ command: 'updateTreeView', treeData: JSON.parse(treeData) });
                             })();
+                            break;
+                        case 'sendMessage':
+                            const dataManagerSend = await DataManager.getInstance();
+                            let treeDataForPrompt = await dataManagerSend.getData();
+                            treeDataForPrompt = await gatherDataForPrompt(treeDataForPrompt);
+                            console.log('Tree data for prompt complete');
+
+                            const prompt = await renderPromptTemplate(context, treeDataForPrompt, message.text);
+
+                            console.log('Prompt:', prompt);
+                            const responseText = await sendOllamaRequest(prompt);
+
+                            panel.webview.postMessage({ command: 'outputText', text: `Ollama: ${responseText}` });
                             break;
                         case 'toggleItem':
                             const dataManager = await DataManager.getInstance();

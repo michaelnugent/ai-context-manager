@@ -1,0 +1,14 @@
+<% Object.keys(treeData).forEach(category => { %>
+    <% Object.keys(treeData[category].items).forEach(item => { %>
+        <% if (treeData[category].items[item].metadata.enabled) { %>
+            File: <%= item %>
+            ----------------------------------------
+            <%= treeData[category].items[item].content %>
+
+        <% } %>
+    <% }) %>
+<% }) %>
+
+User Input:
+----------------------------------------
+<%= userInput %>

@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 import { encode } from 'gpt-tokenizer';
+import ejs from 'ejs';
 
 // utils
 export async function sleep(ms: number) {
@@ -172,3 +173,73 @@ export async function countTokensInFile(filePath: string): Promise<number> {
     }
 }
 // end tokens
+
+// AI calls
+export async function sendOllamaRequest(userMessage: string): Promise<string> {
+    try {
+        const response = await fetch('http://arown.illuminatus.org:3101/api/generate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                model: 'llama3:8b', // Replace with your model
+                prompt: userMessage,
+                stream: false
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data.response; // Adjust based on the actual response structure
+    } catch (error) {
+        console.error('Failed to fetch from Ollama API:', error);
+        return 'Failed to fetch response from Ollama API.';
+    }
+}
+
+export async function gatherDataForPrompt(treeData: any): Promise<any> {
+    console.log(`treeData (gatherDataForPrompt): ${treeData}`);
+    console.log(`Type of treeData (gatherDataForPrompt): ${typeof treeData}`);
+
+    if (Array.isArray(treeData)) {
+        console.error("treeData is an array, expected an object.");
+        return {};
+    }
+
+    for (const category of Object.keys(treeData)) {
+        // console.log(`Category: ${category}`);
+        if (treeData[category].items) {
+            for (const item of Object.keys(treeData[category].items)) {
+                console.log(`Item: ${item}`);
+                if (treeData[category].items[item].metadata.enabled) {
+                    treeData[category].items[item].content = await readFileContents(item);
+                }
+            }
+        }
+    }
+    return treeData;
+}
+
+
+export async function renderPromptTemplate(context: vscode.ExtensionContext, treeData: any, userInput: string): Promise<string> {
+    console.log('Rendering prompt template');
+    console.log(`Type of treeData (renderPromptTemplate): ${typeof treeData}`);
+    const templatePath = path.join(context.extensionPath, 'resources', 'prompt.ejs');
+    const templateData = { treeData, userInput };
+
+    return new Promise((resolve, reject) => {
+        ejs.renderFile(templatePath, templateData, (err, str) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(str);
+            }
+        });
+    });
+}
+
+// end AI calls

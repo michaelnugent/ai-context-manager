@@ -1,4 +1,5 @@
 const vscode = acquireVsCodeApi();
+
 document.getElementById('indexButton').addEventListener('click', () => {
     vscode.postMessage({ command: 'index' });
 });
@@ -13,21 +14,17 @@ document.getElementById('toggleTreeViewButton').addEventListener('click', () => 
     adjustOutputArea();
 });
 
-document.getElementById('sendButton').addEventListener('click', async () => {
+document.getElementById('sendButton').addEventListener('click', () => {
+    console.log('Send button clicked');
     const input = document.getElementById('chatInput');
     const userMessage = input.value;
     if (userMessage.trim() === '') {
+        console.log('Empty message, not sending');
         return;
     }
 
-    // Send the message to the Ollama API and get the response
-    const responseText = await sendOllamaRequest(userMessage);
-
-    // Display the response in the output area
-    const outputArea = document.getElementById('outputArea');
-    outputArea.textContent += `User: ${userMessage}\nOllama: ${responseText}\n\n`;
-    outputArea.scrollTop = outputArea.scrollHeight; // Scroll to the bottom
-
+    // Send the message to the extension
+    vscode.postMessage({ command: 'sendMessage', text: userMessage });
     input.value = '';
 });
 
