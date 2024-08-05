@@ -7,8 +7,6 @@
 // -Prettier - better design overall
 //  -dark mode
 //  -better icons
-//  -break up conversation into parts
-//  -display user data as well
 //  -support markdown output
 //  -add copy/paste for user data
 //  -edit previous conversation in place
@@ -16,6 +14,7 @@
 //  -figure out test coverage
 //  -add more tests
 //  -add file tree to context
+// -clear everything, start fresh button
 
 // STRETCH:
 // -Add needle in haystack/token recommendations for each model
@@ -26,6 +25,9 @@
 // -Add copilot wrapper
 // -Can reference web pages
 // -Can reference DB data
+// -Streaming data
+// -web search
+// -get specific url
 
 
 // ROLLOUT:

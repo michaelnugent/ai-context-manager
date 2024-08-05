@@ -179,22 +179,30 @@ export async function countTokensInFile(filePath: string): Promise<number> {
 
 // AI calls
 
-export async function sendOpenAIRequest(userMessage: string): Promise<string> {
+export async function sendOpenAIRequest(context: vscode.ExtensionContext, userMessage: string): Promise<string> {
     try {
         const config = getConfiguration();
+        const conversationContext = context.globalState.get<any[]>('openaiConversationContext') || [];
         const client = new OpenAI({
             apiKey: config.openaiApiKey,
         });
 
+        conversationContext.push({ role: 'user', content: userMessage });
         // model: "gpt-4o-mini-2024-07-18",
         const response = await client.chat.completions.create({
             model: config.openaiModel,
-            messages: [{ role: "user", content: userMessage }],
+            messages: conversationContext,
             temperature: 0.2,
         });
 
         if (response.choices && response.choices.length > 0) {
-            return response.choices[0].message?.content || "No response content.";
+            const aiMessage = response.choices[0].message;
+            conversationContext.push(aiMessage);
+
+            // Store the updated conversation context in global state
+            context.globalState.update('openaiConversationContext', conversationContext);
+
+            return aiMessage.content || "No response content.";
         } else {
             throw new Error("No choices returned from OpenAI API.");
         }
@@ -204,20 +212,27 @@ export async function sendOpenAIRequest(userMessage: string): Promise<string> {
     }
 }
 
-export async function sendOllamaRequest(userMessage: string): Promise<string> {
+export async function sendOllamaRequest(context: vscode.ExtensionContext, userMessage: string): Promise<string> {
     try {
         const config = getConfiguration();
         // http://arown.illuminatus.org:3101/api/generate
+
+        const requestBody: any = {
+            model: config.ollamaModel,
+            prompt: userMessage,
+            stream: false
+        };
+        const conversationContext = context.globalState.get<string>('ollamaConversationContext');
+        if (conversationContext) {
+            requestBody.context = conversationContext;
+        }
+
         const response = await fetch(config.ollamaUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                model: config.ollamaModel,
-                prompt: userMessage,
-                stream: false
-            })
+            body: JSON.stringify(requestBody)
         });
 
         if (!response.ok) {
@@ -225,6 +240,12 @@ export async function sendOllamaRequest(userMessage: string): Promise<string> {
         }
 
         const data = await response.json();
+
+        // Store the conversation context in global state
+        if (data.context) {
+            context.globalState.update('ollamaConversationContext', data.context);
+        }
+
         return data.response; // Adjust based on the actual response structure
     } catch (error) {
         console.error('Failed to fetch from Ollama API:', error);

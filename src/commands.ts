@@ -106,7 +106,7 @@ export function registerLaunchCommand(context: vscode.ExtensionContext) {
                             let responseText = '';
                             let speaker = '';
                             if (config.ollamaOn) {
-                                responseText = await sendOllamaRequest(prompt);
+                                responseText = await sendOllamaRequest(context, prompt);
                                 speaker = 'Ollama';
                             }
                             else if (config.openaiOn) {
