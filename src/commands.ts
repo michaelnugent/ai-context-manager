@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as ejs from 'ejs';
 import { DataManager } from './datamanager';
 import { handleIndexCommand } from './handlers';
-import { countTokensInFile, gatherDataForPrompt, renderPromptTemplate, sendOllamaRequest } from './utils';
+import { countTokensInFile, gatherDataForPrompt, renderPromptTemplate, sendOllamaRequest, sendOpenAIRequest } from './utils';
 
 export async function initializeDataManager() {
     try {
@@ -101,7 +101,8 @@ export function registerLaunchCommand(context: vscode.ExtensionContext) {
                             const prompt = await renderPromptTemplate(context, treeDataForPrompt, message.text);
 
                             console.log('Prompt:', prompt);
-                            const responseText = await sendOllamaRequest(prompt);
+                            // const responseText = await sendOllamaRequest(prompt);
+                            const responseText = await sendOpenAIRequest(prompt);
 
                             panel.webview.postMessage({ command: 'outputText', text: `Ollama: ${responseText}` });
                             break;

@@ -22,6 +22,7 @@
 // -testing
 //  -figure out test coverage
 //  -add more tests
+//  -add file tree to context
 
 // STRETCH:
 // -Add needle in haystack/token recommendations for each model

@@ -3,6 +3,8 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { encode } from 'gpt-tokenizer';
 import ejs from 'ejs';
+import { OpenAI } from 'openai';
+
 
 // utils
 export async function sleep(ms: number) {
@@ -175,6 +177,31 @@ export async function countTokensInFile(filePath: string): Promise<number> {
 // end tokens
 
 // AI calls
+
+export async function sendOpenAIRequest(userMessage: string): Promise<string> {
+    try {
+        // TODOL: delete this key on the server side
+        const client = new OpenAI({
+            apiKey: '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',
+        });
+
+        const response = await client.chat.completions.create({
+            model: "gpt-4o-mini-2024-07-18",
+            messages: [{ role: "user", content: userMessage }],
+            temperature: 0.2,
+        });
+
+        if (response.choices && response.choices.length > 0) {
+            return response.choices[0].message?.content || "No response content.";
+        } else {
+            throw new Error("No choices returned from OpenAI API.");
+        }
+    } catch (error) {
+        console.error('Failed to fetch from OpenAI API:', error);
+        return 'Failed to fetch response from OpenAI API.';
+    }
+}
+
 export async function sendOllamaRequest(userMessage: string): Promise<string> {
     try {
         const response = await fetch('http://arown.illuminatus.org:3101/api/generate', {

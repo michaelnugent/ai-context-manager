@@ -1,8 +1,6 @@
 # ai-context-manager README
 
-Updated to force a change.
-
-This is the README for your extension "ai-context-manager". After writing up a brief description, we recommend including the following sections.
+The VSCode extension, "AI Context Manager", is an AI-powered tool that enables developers to manage and organize their coding context efficiently. With this extension, users can add files to a specific context, launch the extension, or simply say hello to the AI-powered assistant. The extension's main functionality seems to be centered around managing context, which could include features such as code organization, syntax highlighting, and project management, all powered by artificial intelligence.
 
 ## Features
 
