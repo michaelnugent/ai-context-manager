@@ -169,23 +169,27 @@ export async function handleIndexCommand(panel: vscode.WebviewPanel, extensionPa
 	console.log('references:', references);
 
 	const refcat = "By Reference";
-	references.forEach(async (ref) => {
+	for (const ref of references) {
 		const tokens = await countTokensInFile(ref);
 		await datamanager.addItem(refcat, ref);
 		await datamanager.setTokenCount(refcat, ref, tokens);
-		console.log(ref + ' tokens:', tokens);
-	});
+		console.log(ref + ' tokens:', await datamanager.getTokenCount(refcat, ref));
+	}
 
 	const dirfiles = await findFilesInSameDirectory(path.dirname(document.uri.fsPath));
 	console.log('dirfiles:', dirfiles);
 
 	const dircat = "By Directory";
-	dirfiles.forEach(async (file) => {
+	for (const file of dirfiles) {
 		const tokens = await countTokensInFile(file);
 		await datamanager.addItem(dircat, file);
 		await datamanager.setTokenCount(dircat, file, tokens);
-		console.log(file + ' tokens:', tokens);
-	});
+		console.log(file + ' tokens:', await datamanager.getTokenCount(dircat, file));
+	}
+
+	const dmj = await datamanager.asJson();
+	panel.webview.postMessage({ command: 'outputText', text: dmj });
+	console.log('DataManager JSON:', dmj);
 }
 // end handlers
 

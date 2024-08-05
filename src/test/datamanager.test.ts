@@ -119,4 +119,55 @@ suite('DataManager Test Suite', () => {
         assert.strictEqual(isItemEnabled, false, 'Item should be disabled');
     });
 
+    test('Convert data to JSON', async () => {
+        const dataManager = await DataManager.getInstance();
+        await dataManager.addCategory('TestCategory');
+        await dataManager.addItem('TestCategory', 'TestItem');
+        const json = await dataManager.asJson();
+        const expectedJson = JSON.stringify({
+            'TestCategory': {
+                metadata: {
+                    enabled: true,
+                    tokenCount: 0
+                },
+                items: {
+                    'TestItem': {
+                        metadata: {
+                            enabled: true,
+                            tokenCount: 0,
+                            dirty: false
+                        }
+                    }
+                }
+            }
+        }, null, 4);
+        assert.strictEqual(json, expectedJson, 'The JSON representation should match the expected structure');
+    });
+
+    test('Parse data from JSON', async () => {
+        const json = JSON.stringify({
+            'TestCategory': {
+                metadata: {
+                    enabled: true,
+                    tokenCount: 0
+                },
+                items: {
+                    'TestItem': {
+                        metadata: {
+                            enabled: true,
+                            tokenCount: 0,
+                            dirty: false
+                        }
+                    }
+                }
+            }
+        }, null, 4);
+        const dataManager = await DataManager.getInstance();
+        await dataManager.fromJson(json);
+        const categories = await dataManager.getCategories();
+        assert.strictEqual(categories.includes('TestCategory'), true, 'Category should be parsed from JSON');
+        const items = await dataManager.getItems('TestCategory');
+        assert.strictEqual(items.includes('TestItem'), true, 'Item should be parsed from JSON');
+    });
+
 });

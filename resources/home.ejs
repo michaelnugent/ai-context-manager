@@ -9,36 +9,59 @@
 </head>
 
 <body>
-    <h1>Welcome to AI Context Manager!</h1>
-    <button id="indexButton">Index</button>
+    <div class="container">
 
-    <div class="tree-view">
-        <% treeData.forEach((item, index)=> { %>
-            <div class="tree-item">
-                <div class="tree-item-header">
-                    <input type="checkbox" id="enable-<%= index %>" <%=item.enabled ? 'checked' : '' %>>
-                    <span class="toggle-btn" data-id="<%= index %>">▶</span>
-                    <label for="enable-<%= index %>">
-                        <%= item.title %>
-                    </label>
-                    <span class="token-count">(~<%= item.tokenCount %> tokens)</span>
-                    <span class="remove-btn" data-id="<%= index %>">❌</span>
+        <h1>Welcome to AI Context Manager!</h1>
+        <button id="indexButton">Index</button>
+        <button id="toggleTreeViewButton">Toggle Tree View</button>
+
+        <div id="treeView" class="tree-view">
+            <% treeData.forEach((item, index)=> { %>
+                <div class="tree-item">
+                    <div class="tree-item-header">
+                        <input type="checkbox" id="enable-<%= index %>" <%=item.enabled ? 'checked' : '' %>>
+                        <span class="toggle-btn" data-id="<%= index %>">▶</span>
+                        <label for="enable-<%= index %>">
+                            <%= item.title %>
+                        </label>
+                        <span class="token-count">(~<%= item.tokenCount %> tokens)</span>
+                        <span class="remove-btn" data-id="<%= index %>">❌</span>
+                    </div>
+                    <div class="tree-item-content" id="content-<%= index %>" style="display: none;">
+                        <% item.children.forEach(child=> { %>
+                            <div>
+                                <%= child %>
+                            </div>
+                            <% }) %>
+                    </div>
                 </div>
-                <div class="tree-item-content" id="content-<%= index %>" style="display: none;">
-                    <% item.children.forEach(child=> { %>
-                        <div>
-                            <%= child %>
-                        </div>
-                        <% }) %>
-                </div>
-            </div>
-            <% }) %>
+                <% }) %>
+        </div>
+
+        <!-- Text output area -->
+        <div id="outputArea" class="output-area"></div>
+    </div>
+
+    <!-- Chat bar at the bottom -->
+    <div class="chat-bar">
+        <input type="text" id="chatInput" placeholder="Type a message...">
+        <button id="sendButton">Send</button>
     </div>
 
     <script>
         const vscode = acquireVsCodeApi();
         document.getElementById('indexButton').addEventListener('click', () => {
             vscode.postMessage({ command: 'index' });
+        });
+
+        document.getElementById('toggleTreeViewButton').addEventListener('click', () => {
+            const treeView = document.getElementById('treeView');
+            if (treeView.style.display === 'none') {
+                treeView.style.display = 'block';
+            } else {
+                treeView.style.display = 'none';
+            }
+            adjustOutputArea();
         });
 
         document.querySelectorAll('.tree-item-header input[type="checkbox"]').forEach(checkbox => {
@@ -68,6 +91,45 @@
                 }
             });
         });
+
+        document.getElementById('sendButton').addEventListener('click', () => {
+            const input = document.getElementById('chatInput');
+            vscode.postMessage({ command: 'sendMessage', text: input.value });
+            input.value = '';
+        });
+
+        document.getElementById('chatInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const input = document.getElementById('chatInput');
+                vscode.postMessage({ command: 'sendMessage', text: input.value });
+                input.value = '';
+            }
+        });
+
+        // Handle messages sent from the extension
+        window.addEventListener('message', event => {
+            const message = event.data;
+            switch (message.command) {
+                case 'outputText':
+                    const outputArea = document.getElementById('outputArea');
+                    outputArea.textContent += message.text + '\n';
+                    outputArea.scrollTop = outputArea.scrollHeight; // Scroll to the bottom
+                    break;
+            }
+        });
+
+        function adjustOutputArea() {
+            const treeView = document.getElementById('treeView');
+            const outputArea = document.getElementById('outputArea');
+            if (treeView.style.display === 'none') {
+                outputArea.style.height = 'calc(100% - 50px)'; // Adjust height accordingly
+            } else {
+                outputArea.style.height = 'calc(100% - 250px)'; // Adjust height accordingly
+            }
+        }
+
+        window.addEventListener('resize', adjustOutputArea);
+        adjustOutputArea(); // Initial call
     </script>
 </body>
 
