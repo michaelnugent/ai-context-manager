@@ -1,10 +1,47 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
+//
+// TODO:
+// -Load/save trees
+// -Preferences
+//  -Additional static context from user
+//  -load/save preferences
+// -Multiple model setup
+//  -Add openai wrapper
+//  -Add anthropic wrapper
+//  -Add copilot wrapper
+// -add previous conversation to prompt
+// -Subtotal total estimate for datatree, deduped
+// -Total tokens for subtotal + user input + previous conversation
+// -Prettier - better design overall
+//  -dark mode
+//  -better icons
+//  -break up conversation into parts
+//  -display user data as well
+//  -support markdown output
+//  -add copy/paste for user data
+//  -edit previous conversation in place
+// -testing
+//  -figure out test coverage
+//  -add more tests
+
+// STRETCH:
+// -Add needle in haystack/token recommendations for each model
+// -Add drag and drop
+// -Implement features from TODO list
+// -edit code in place
+// -support tts and stt ("argue with your code")
+
+// ROLLOUT:
+// -figure out how to package extensions
+// -test install on another machine
+// -test installs across different platforms
+// -Write docs
+// -Apply best practices
+// -Set up github
+// -Set up CI/CD in github repo, push load repo
+
+
+
 import * as vscode from 'vscode';
-import * as path from 'path';
-import * as ejs from 'ejs';
-import { DataManager } from './datamanager';
-import { handleIndexCommand } from './handlers';
 import { initializeDataManager, registerLaunchCommand } from './commands';
 
 // This method is called when your extension is activated
