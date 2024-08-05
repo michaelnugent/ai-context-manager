@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import { encode } from 'gpt-tokenizer';
 import ejs from 'ejs';
 import { OpenAI } from 'openai';
+import { getConfiguration } from './preferences';
 
 
 // utils
@@ -180,14 +181,14 @@ export async function countTokensInFile(filePath: string): Promise<number> {
 
 export async function sendOpenAIRequest(userMessage: string): Promise<string> {
     try {
-        // TODOL: delete this key on the server side
+        const config = getConfiguration();
         const client = new OpenAI({
-            apiKey: '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',
+            apiKey: config.openaiApiKey,
         });
 
         // model: "gpt-4o-mini-2024-07-18",
         const response = await client.chat.completions.create({
-            model: "gpt-4o",
+            model: config.openaiModel,
             messages: [{ role: "user", content: userMessage }],
             temperature: 0.2,
         });
@@ -205,13 +206,15 @@ export async function sendOpenAIRequest(userMessage: string): Promise<string> {
 
 export async function sendOllamaRequest(userMessage: string): Promise<string> {
     try {
-        const response = await fetch('http://arown.illuminatus.org:3101/api/generate', {
+        const config = getConfiguration();
+        // http://arown.illuminatus.org:3101/api/generate
+        const response = await fetch(config.ollamaUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                model: 'llama3:8b', // Replace with your model
+                model: config.ollamaModel,
                 prompt: userMessage,
                 stream: false
             })

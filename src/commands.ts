@@ -4,6 +4,7 @@ import * as ejs from 'ejs';
 import { DataManager } from './datamanager';
 import { handleIndexCommand } from './handlers';
 import { countTokensInFile, gatherDataForPrompt, renderPromptTemplate, sendOllamaRequest, sendOpenAIRequest } from './utils';
+import { getConfiguration } from './preferences';
 
 export async function initializeDataManager() {
     try {
@@ -93,6 +94,7 @@ export function registerLaunchCommand(context: vscode.ExtensionContext) {
                             })();
                             break;
                         case 'sendMessage':
+                            const config = getConfiguration();
                             const dataManagerSend = await DataManager.getInstance();
                             let treeDataForPrompt = await dataManagerSend.getData();
                             treeDataForPrompt = await gatherDataForPrompt(treeDataForPrompt);
@@ -101,10 +103,21 @@ export function registerLaunchCommand(context: vscode.ExtensionContext) {
                             const prompt = await renderPromptTemplate(context, treeDataForPrompt, message.text);
 
                             console.log('Prompt:', prompt);
-                            // const responseText = await sendOllamaRequest(prompt);
-                            const responseText = await sendOpenAIRequest(prompt);
+                            let responseText = '';
+                            let speaker = '';
+                            if (config.ollamaOn) {
+                                responseText = await sendOllamaRequest(prompt);
+                                speaker = 'Ollama';
+                            }
+                            else if (config.openaiOn) {
+                                responseText = await sendOpenAIRequest(prompt);
+                                speaker = 'OpenAI';
+                            }
+                            else {
+                                console.error('No AI service is enabled');
+                            }
 
-                            panel.webview.postMessage({ command: 'outputText', text: `Ollama: ${responseText}` });
+                            panel.webview.postMessage({ command: 'outputText', text: `${speaker}: ${responseText}` });
                             break;
                         case 'toggleItem':
                             const dataManager = await DataManager.getInstance();

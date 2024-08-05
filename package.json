@@ -2,7 +2,7 @@
   "name": "ai-context-manager",
   "displayName": "AI Context Manager",
   "description": "Context Manager for AI Copilot",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "engines": {
     "vscode": "^1.91.0"
   },
@@ -29,6 +29,10 @@
       {
         "command": "ai-context-manager.addToContext",
         "title": "Add files to context"
+      },
+      {
+        "command": "ai-context-manager.openSettings",
+        "title": "AI Context Manager Settings"
       }
     ],
     "menus": {
@@ -44,7 +48,72 @@
           "when": "editorTextFocus",
           "group": "navigation"
         }
+      ],
+      "extension/context": [
+        {
+          "command": "ai-context-manager.openSettings",
+          "group": "navigation"
+        }
       ]
+    },
+    "configuration": {
+      "title": "AI Context Manager",
+      "properties": {
+        "ai-context-manager.openai.on": {
+          "type": "boolean",
+          "default": false,
+          "description": "Run openai api?",
+          "scope": "machine"
+        },
+        "ai-context-manager.openai.url": {
+          "type": "string",
+          "default": "",
+          "description": "OpenAI API override url - blank for default",
+          "scope": "machine"
+        },
+        "ai-context-manager.openai.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "OpenAI API Key",
+          "scope": "machine"
+        },
+        "ai-context-manager.openai.model": {
+          "type": "string",
+          "default": "gpt-4o-mini",
+          "description": "OpenAI API model",
+          "scope": "machine"
+        },
+        "ai-context-manager.openai.temperature": {
+          "type": "number",
+          "default": 0.2,
+          "description": "OpenAI API Temperature",
+          "scope": "machine"
+        },
+        "ai-context-manager.ollama.on": {
+          "type": "boolean",
+          "default": false,
+          "description": "Run ollama api?",
+          "scope": "machine"
+        },
+        "ai-context-manager.ollama.url": {
+          "type": "string",
+          "default": "http://localhost:11434/api/generate",
+          "description": "ollama API url",
+          "scope": "machine"
+        },
+        "ai-context-manager.ollama.model": {
+          "type": "string",
+          "default": "llama3:8b",
+          "description": "ollama API model",
+          "scope": "machine"
+        },
+        "ai-context-manager.ollama.temperature": {
+          "type": "number",
+          "default": 0.2,
+          "description": "ollama API Temperature",
+          "scope": "machine"
+        }
+      }
     }
   },
   "scripts": {
