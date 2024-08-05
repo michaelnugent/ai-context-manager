@@ -6,6 +6,7 @@ import * as ejs from 'ejs';
 import * as fs from 'fs';
 
 import { encode } from 'gpt-tokenizer';
+import { DataManager } from './datamanager';
 
 
 // This method is called when your extension is activated
@@ -45,10 +46,17 @@ export function deactivate() { }
 function registerLaunchCommand(context: vscode.ExtensionContext) {
 	console.log('registering launch command');
 	context.subscriptions.push(
-		vscode.commands.registerCommand('ai-context-manager.addToContext', () => {
-			vscode.window.showInformationMessage('Adding to context!');
+		vscode.commands.registerCommand('ai-context-manager.addToContext', (uri: vscode.Uri, uris: vscode.Uri[]) => {
+			if (uris && uris.length > 0) {
+				uris.forEach(selectedUri => {
+					vscode.window.showInformationMessage(`Adding to context: ${selectedUri.fsPath}`);
+				});
+			} else {
+				vscode.window.showInformationMessage(`Adding to context: ${uri.fsPath}`);
+			}
 		})
 	);
+
 
 	context.subscriptions.push(
 		vscode.commands.registerCommand('ai-context-manager.launch', () => {
