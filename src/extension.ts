@@ -1,11 +1,6 @@
 //
 //
 // TODO:
-// -Preferences
-//  -Additional static context from user
-//  -load/save preferences
-// -Multiple model setup
-//  -Add anthropic wrapper
 // -Add previous conversation to prompt
 // -Subtotal total estimate for datatree, deduped
 // -Total tokens for subtotal + user input + previous conversation

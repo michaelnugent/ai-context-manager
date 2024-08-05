@@ -55,22 +55,36 @@ html {
 
 /* Output area styles */
 .output-area {
-    flex: 1;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #ffffff;
-    /* Increased contrast with white background */
-    color: #000000;
-    /* Increased contrast with black text */
+    /* Existing styles */
     overflow-y: auto;
     white-space: pre-wrap;
     font-family: Consolas, Monaco, 'Courier New', Courier, monospace;
-    /* Monospace font for better readability */
     box-sizing: border-box;
     height: calc(100% - 250px);
-    /* Default height when tree view is visible */
+}
+
+.message {
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.user-message {
+    background-color: #1e88e5;
+    /* Darker blue for user messages */
+    color: #ffffff;
+    /* Light text for better contrast */
+    align-self: flex-end;
+    /* Align user messages to the right */
+}
+
+.ai-message {
+    background-color: #ff9800;
+    /* Darker orange for AI responses */
+    color: #000000;
+    /* Dark text for better contrast */
+    align-self: flex-start;
+    /* Align AI messages to the left */
 }
 
 /* Chat bar styles */

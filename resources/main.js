@@ -15,17 +15,25 @@ document.getElementById('toggleTreeViewButton').addEventListener('click', () => 
 });
 
 document.getElementById('sendButton').addEventListener('click', () => {
-    console.log('Send button clicked');
     const input = document.getElementById('chatInput');
     const userMessage = input.value;
     if (userMessage.trim() === '') {
-        console.log('Empty message, not sending');
         return;
     }
+
+    // Create a new message section for the user input
+    const userMessageDiv = document.createElement('div');
+    userMessageDiv.classList.add('message', 'user-message');
+    userMessageDiv.textContent = userMessage;
+    const outputArea = document.getElementById('outputArea');
+    outputArea.appendChild(userMessageDiv);
 
     // Send the message to the extension
     vscode.postMessage({ command: 'sendMessage', text: userMessage });
     input.value = '';
+
+    // Store the output data after sending the message
+    storeOutputData(outputArea.innerHTML);
 });
 
 document.getElementById('chatInput').addEventListener('keypress', (e) => {
@@ -39,10 +47,12 @@ window.addEventListener('message', event => {
     const message = event.data;
     switch (message.command) {
         case 'outputText':
-            const outputArea = document.getElementById('outputArea');
-            outputArea.textContent += message.text + '\n';
+            const outputMessageDiv = document.createElement('div');
+            outputMessageDiv.classList.add('message', 'ai-message');
+            outputMessageDiv.textContent = message.text;
+            outputArea.appendChild(outputMessageDiv);
             outputArea.scrollTop = outputArea.scrollHeight; // Scroll to the bottom
-            storeOutputData(outputArea.textContent); // Store the output data
+            storeOutputData(outputArea.innerHTML); // Store the output data
             break;
         case 'updateTreeView':
             updateTreeView(message.treeData);
@@ -185,7 +195,7 @@ function retrieveOutputData() {
 // Restore output data on load
 window.addEventListener('load', () => {
     const outputArea = document.getElementById('outputArea');
-    outputArea.textContent = retrieveOutputData();
+    outputArea.innerHTML = retrieveOutputData();
     outputArea.scrollTop = outputArea.scrollHeight; // Scroll to the bottom
 });
 
