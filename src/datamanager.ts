@@ -166,6 +166,18 @@ export class DataManager {
         }
     }
 
+    public async isCategoryEnabled(category: string): Promise<boolean> {
+        try {
+            if (!(category in this.data)) {
+                throw new Error(`Category '${category}' does not exist`);
+            }
+            return this.data[category].metadata.enabled;
+        } catch (error) {
+            console.error(`Failed to get enabled status for category '${category}':`, error);
+            throw error;
+        }
+    }
+
     public async enableItem(category: string, item: string): Promise<void> {
         try {
             this.checkCategoryAndItemExist(category, item);
@@ -182,6 +194,16 @@ export class DataManager {
             this.data[category].items[item].metadata.enabled = false;
         } catch (error) {
             console.error(`Failed to disable item '${item}' in category '${category}':`, error);
+            throw error;
+        }
+    }
+
+    public async isItemEnabled(category: string, item: string): Promise<boolean> {
+        try {
+            this.checkCategoryAndItemExist(category, item);
+            return this.data[category].items[item].metadata.enabled;
+        } catch (error) {
+            console.error(`Failed to get enabled status for item '${item}' in category '${category}':`, error);
             throw error;
         }
     }

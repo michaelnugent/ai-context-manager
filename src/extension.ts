@@ -8,7 +8,6 @@ import * as fs from 'fs';
 import { encode } from 'gpt-tokenizer';
 import { DataManager } from './datamanager';
 
-
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -129,6 +128,7 @@ export async function handleIndexCommand(panel: vscode.WebviewPanel, extensionPa
 		return;
 	}
 
+	const datamanager = await DataManager.getInstance();
 	const filepath = activeEditor.document.uri.fsPath;
 	const uri = vscode.Uri.file(filepath);
 	const document = await vscode.workspace.openTextDocument(uri);
@@ -148,12 +148,25 @@ export async function handleIndexCommand(panel: vscode.WebviewPanel, extensionPa
 	const references = await getReferencesFromSymbols(metadata.symbols, activeEditor.document);
 	console.log('references:', references);
 
+	const refcat = "By Reference";
+	await datamanager.addCategory(refcat);
+	references.forEach(async (ref) => {
+		const tokens = await countTokensInFile(ref);
+		await datamanager.addItem(refcat, ref);
+		await datamanager.setTokenCount(refcat, ref, tokens);
+		console.log(ref + ' tokens:', tokens);
+	});
+
 	const dirfiles = await findFilesInSameDirectory(path.dirname(document.uri.fsPath));
 	console.log('dirfiles:', dirfiles);
 
-	references.forEach(async (ref) => {
-		const tokens = await countTokensInFile(ref);
-		console.log('tokens:', tokens);
+	const dircat = "By Directory";
+	await datamanager.addCategory(dircat);
+	dirfiles.forEach(async (file) => {
+		const tokens = await countTokensInFile(file);
+		await datamanager.addItem(dircat, file);
+		await datamanager.setTokenCount(dircat, file, tokens);
+		console.log(file + ' tokens:', tokens);
 	});
 }
 // end handlers
@@ -313,9 +326,19 @@ async function findFilesInSameDirectory(directory: string): Promise<string[]> {
 // tokens
 
 async function countTokensInFile(filePath: string): Promise<number> {
-	const fileContents = await readFileContents(filePath);
-	const encoded = encode(fileContents);
-	return encoded.length;
+	try {
+		const stats = await fs.promises.stat(filePath);
+		if (!stats.isFile()) {
+			return 0;
+		}
+
+		const fileContents = await readFileContents(filePath);
+		const encoded = encode(fileContents);
+		return encoded.length;
+	} catch (error) {
+		console.error(`Error reading file '${filePath}':`, error);
+		return 0;
+	}
 }
 
 // end tokens
