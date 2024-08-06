@@ -6,8 +6,6 @@
 // -Prettier - better design overall
 //  -dark mode
 //  -better icons
-//  -support markdown output
-//  -add copy/paste for user data
 //  -edit previous conversation in place
 // -testing
 //  -figure out test coverage
