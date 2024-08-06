@@ -179,7 +179,7 @@ export async function countTokensInFile(filePath: string): Promise<number> {
 
 // AI calls
 
-export async function sendOpenAIRequest(context: vscode.ExtensionContext, userMessage: string): Promise<string> {
+export async function sendOpenAIRequest(context: vscode.ExtensionContext, panel: vscode.WebviewPanel, userMessage: string, aiMessageId: string): Promise<void> {
     try {
         const config = getConfiguration();
         const conversationContext = context.globalState.get<any[]>('openaiConversationContext') || [];
@@ -193,26 +193,25 @@ export async function sendOpenAIRequest(context: vscode.ExtensionContext, userMe
             model: config.openaiModel,
             messages: conversationContext,
             temperature: 0.2,
+            stream: true,
         });
 
-        if (response.choices && response.choices.length > 0) {
-            const aiMessage = response.choices[0].message;
-            conversationContext.push(aiMessage);
-
-            // Store the updated conversation context in global state
-            context.globalState.update('openaiConversationContext', conversationContext);
-
-            return aiMessage.content || "No response content.";
-        } else {
-            throw new Error("No choices returned from OpenAI API.");
+        for await (const chunk of response) {
+            if (chunk.choices && chunk.choices.length > 0) {
+                const aiMessage = chunk.choices[0].delta;
+                if (aiMessage.content) {
+                    conversationContext.push(aiMessage);
+                    context.globalState.update('openaiConversationContext', conversationContext);
+                    panel.webview.postMessage({ command: 'outputText', text: aiMessage.content, aiMessageId: aiMessageId });
+                }
+            }
         }
     } catch (error) {
         console.error('Failed to fetch from OpenAI API:', error);
-        return 'Failed to fetch response from OpenAI API.';
     }
 }
 
-export async function sendOllamaRequest(context: vscode.ExtensionContext, userMessage: string): Promise<string> {
+export async function sendOllamaRequest(context: vscode.ExtensionContext, panel: vscode.WebviewPanel, userMessage: string, aiMessageId: string): Promise<void> {
     try {
         const config = getConfiguration();
         // http://arown.illuminatus.org:3101/api/generate
@@ -220,7 +219,7 @@ export async function sendOllamaRequest(context: vscode.ExtensionContext, userMe
         const requestBody: any = {
             model: config.ollamaModel,
             prompt: userMessage,
-            stream: false
+            stream: true,
         };
         const conversationContext = context.globalState.get<string>('ollamaConversationContext');
         if (conversationContext) {
@@ -239,17 +238,33 @@ export async function sendOllamaRequest(context: vscode.ExtensionContext, userMe
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const data = await response.json();
+        if (response.body) {
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let result = '';
 
-        // Store the conversation context in global state
-        if (data.context) {
-            context.globalState.update('ollamaConversationContext', data.context);
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) {
+                    break;
+                }
+
+                const chunk = decoder.decode(value, { stream: true });
+                try {
+                    const json = JSON.parse(chunk);
+                    if (json.response) {
+                        result += json.response;
+                        panel.webview.postMessage({ command: 'outputText', text: result, aiMessageId: aiMessageId });
+                    }
+                } catch (e) {
+                    console.error('Failed to parse chunk:', e);
+                }
+            }
+        } else {
+            throw new Error('Response body is null');
         }
-
-        return data.response; // Adjust based on the actual response structure
     } catch (error) {
         console.error('Failed to fetch from Ollama API:', error);
-        return 'Failed to fetch response from Ollama API.';
     }
 }
 

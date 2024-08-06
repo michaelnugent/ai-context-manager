@@ -1,7 +1,6 @@
 //
 //
 // TODO:
-// -Add previous conversation to prompt
 // -Subtotal total estimate for datatree, deduped
 // -Total tokens for subtotal + user input + previous conversation
 // -Prettier - better design overall
@@ -15,6 +14,7 @@
 //  -add more tests
 //  -add file tree to context
 // -clear everything, start fresh button
+// -refactor inference calls to avoid prompt/memory duplication
 
 // STRETCH:
 // -Add needle in haystack/token recommendations for each model

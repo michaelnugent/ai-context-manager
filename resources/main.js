@@ -28,8 +28,15 @@ document.getElementById('sendButton').addEventListener('click', () => {
     const outputArea = document.getElementById('outputArea');
     outputArea.appendChild(userMessageDiv);
 
+    // Create a new div for the AI response with a unique ID
+    const aiMessageId = `aiMessage-${Date.now()}`;
+    const aiMessageDiv = document.createElement('div');
+    aiMessageDiv.classList.add('message', 'ai-message');
+    aiMessageDiv.id = aiMessageId;
+    outputArea.appendChild(aiMessageDiv);
+
     // Send the message to the extension
-    vscode.postMessage({ command: 'sendMessage', text: userMessage });
+    vscode.postMessage({ command: 'sendMessage', text: userMessage, aiMessageId: aiMessageId });
     input.value = '';
 
     // Store the output data after sending the message
@@ -47,12 +54,13 @@ window.addEventListener('message', event => {
     const message = event.data;
     switch (message.command) {
         case 'outputText':
-            const outputMessageDiv = document.createElement('div');
-            outputMessageDiv.classList.add('message', 'ai-message');
-            outputMessageDiv.textContent = message.text;
-            outputArea.appendChild(outputMessageDiv);
-            outputArea.scrollTop = outputArea.scrollHeight; // Scroll to the bottom
-            storeOutputData(outputArea.innerHTML); // Store the output data
+            const aiMessageDiv = document.getElementById(message.aiMessageId);
+            if (aiMessageDiv) {
+                aiMessageDiv.textContent = message.text;
+                const outputArea = document.getElementById('outputArea');
+                outputArea.scrollTop = outputArea.scrollHeight; // Scroll to the bottom
+                storeOutputData(outputArea.innerHTML); // Store the output data
+            }
             break;
         case 'updateTreeView':
             updateTreeView(message.treeData);

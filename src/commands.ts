@@ -106,18 +106,17 @@ export function registerLaunchCommand(context: vscode.ExtensionContext) {
                             let responseText = '';
                             let speaker = '';
                             if (config.ollamaOn) {
-                                responseText = await sendOllamaRequest(context, prompt);
+                                await sendOllamaRequest(context, panel, prompt, message.aiMessageId);
                                 speaker = 'Ollama';
                             }
                             else if (config.openaiOn) {
-                                responseText = await sendOpenAIRequest(prompt);
+                                await sendOpenAIRequest(context, panel, prompt, message.aiMessageId);
                                 speaker = 'OpenAI';
                             }
                             else {
                                 console.error('No AI service is enabled');
+                                panel.webview.postMessage({ command: 'outputText', text: 'No AI service is enabled.', aiMessageId: message.aiMessageId });
                             }
-
-                            panel.webview.postMessage({ command: 'outputText', text: `${speaker}: ${responseText}` });
                             break;
                         case 'toggleItem':
                             const dataManager = await DataManager.getInstance();
