@@ -2,9 +2,9 @@
   "name": "ai-context-manager",
   "displayName": "AI Context Manager",
   "description": "Context Manager for AI Copilot",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "engines": {
-    "vscode": "^1.91.0"
+    "vscode": "^1.89.1"
   },
   "publisher": "illuminatus",
   "repository": {
@@ -134,7 +134,7 @@
     "@types/ejs": "^3.1.5",
     "@types/mocha": "^10.0.7",
     "@types/node": "20.x",
-    "@types/vscode": "^1.91.0",
+    "@types/vscode": "^1.89.1",
     "@typescript-eslint/eslint-plugin": "^7.14.1",
     "@typescript-eslint/parser": "^7.11.0",
     "@vscode/test-cli": "^0.0.9",
