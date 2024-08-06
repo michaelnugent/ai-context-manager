@@ -57,13 +57,32 @@ window.addEventListener('message', event => {
             const aiMessageDiv = document.getElementById(message.aiMessageId);
             if (aiMessageDiv) {
                 // Parse the Markdown content and set it as HTML, then sanitize it
-                console.log("premark");
                 const rawHtml = marked.parse(message.text);
                 const cleanHtml = DOMPurify.sanitize(rawHtml);
-                aiMessageDiv.innerHTML = `<div class="markdown-body">${cleanHtml}</div>`;
+                const markdownId = `${message.aiMessageId}-markdown`;
+                aiMessageDiv.innerHTML = `
+                    <div id="${markdownId}" class="markdown-body">${cleanHtml}</div>
+                    <button class="copy-button" data-target="${markdownId}">Copy</button>
+                `;
                 const outputArea = document.getElementById('outputArea');
                 outputArea.scrollTop = outputArea.scrollHeight; // Scroll to the bottom
                 storeOutputData(outputArea.innerHTML); // Store the output data
+
+                // Add event listener for the copy button
+                aiMessageDiv.querySelector('.copy-button').addEventListener('click', function () {
+                    const targetId = this.getAttribute('data-target');
+                    const targetDiv = document.getElementById(targetId);
+                    if (targetDiv) {
+                        navigator.clipboard.writeText(targetDiv.innerText).then(() => {
+                            alert('Copied to clipboard');
+                            console.log('Text copied to clipboard:', targetDiv.innerText);
+                        }).catch(err => {
+                            console.error('Failed to copy text: ', err);
+                        });
+                    } else {
+                        console.error('Target div not found for id:', targetId);
+                    }
+                });
             }
             break;
         case 'updateTreeView':

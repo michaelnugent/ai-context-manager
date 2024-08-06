@@ -71,6 +71,7 @@ html {
     margin: 10px 0;
     padding: 10px;
     border-radius: 5px;
+    position: relative;
 }
 
 .user-message {
@@ -205,4 +206,22 @@ html {
     border: 1px solid #dfe2e5;
     color: #e0e0e0;
     /* Light text for table cells */
+}
+
+/* Copy button styles */
+.copy-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    font-size: 12px;
+    background-color: #007acc;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.copy-button:hover {
+    background-color: #005f9e;
 }
