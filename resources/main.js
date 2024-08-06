@@ -56,7 +56,11 @@ window.addEventListener('message', event => {
         case 'outputText':
             const aiMessageDiv = document.getElementById(message.aiMessageId);
             if (aiMessageDiv) {
-                aiMessageDiv.textContent = message.text;
+                // Parse the Markdown content and set it as HTML, then sanitize it
+                console.log("premark");
+                const rawHtml = marked.parse(message.text);
+                const cleanHtml = DOMPurify.sanitize(rawHtml);
+                aiMessageDiv.innerHTML = `<div class="markdown-body">${cleanHtml}</div>`;
                 const outputArea = document.getElementById('outputArea');
                 outputArea.scrollTop = outputArea.scrollHeight; // Scroll to the bottom
                 storeOutputData(outputArea.innerHTML); // Store the output data

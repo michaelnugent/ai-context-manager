@@ -54,9 +54,16 @@ export function registerLaunchCommand(context: vscode.ExtensionContext) {
 
             const cssPath = vscode.Uri.file(path.join(context.extensionPath, 'resources', 'home.css'));
             const cssUri = panel.webview.asWebviewUri(cssPath);
+
             const scriptPath = vscode.Uri.file(path.join(context.extensionPath, 'resources', 'main.js'));
             const scriptUri = panel.webview.asWebviewUri(scriptPath);
+
             const templatePath = path.join(context.extensionPath, 'resources', 'home.ejs');
+
+            const markedPath = vscode.Uri.file(path.join(context.extensionPath, 'resources', 'lib', 'marked.min.js'));
+            const markedUri = panel.webview.asWebviewUri(markedPath);
+            const purifyPath = vscode.Uri.file(path.join(context.extensionPath, 'resources', 'lib', 'purify.min.js'));
+            const purifyUri = panel.webview.asWebviewUri(purifyPath);
 
             (async () => {
                 const dataManager = await DataManager.getInstance();
@@ -67,7 +74,7 @@ export function registerLaunchCommand(context: vscode.ExtensionContext) {
 
                 const treeData = JSON.parse(await dataManager.asJson());
 
-                ejs.renderFile(templatePath, { cssUri, scriptUri, treeData }, (err, html) => {
+                ejs.renderFile(templatePath, { cssUri, scriptUri, markedUri, purifyUri, treeData }, (err, html) => {
                     if (err) {
                         console.error('Error rendering EJS template:', err);
                         panel.webview.html = `<h1>Error loading content</h1>`;

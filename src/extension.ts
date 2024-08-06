@@ -19,13 +19,12 @@
 // STRETCH:
 // -Add needle in haystack/token recommendations for each model
 // -Add drag and drop
-// -Implement features from TODO list
+// -"Implement features from TODO list"
 // -edit code in place
 // -support tts and stt ("argue with your code")
 // -Add copilot wrapper
 // -Can reference web pages
 // -Can reference DB data
-// -Streaming data
 // -web search
 // -get specific url
 
