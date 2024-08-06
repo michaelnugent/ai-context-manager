@@ -1,4 +1,6 @@
 //
+// BUGS:
+// -both ollama and openai conversations are unnecessarily long. Massive dedupe needed.
 //
 // TODO:
 // -Subtotal total estimate for datatree, deduped

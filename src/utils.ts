@@ -182,10 +182,14 @@ export async function countTokensInFile(filePath: string): Promise<number> {
 export async function sendOpenAIRequest(context: vscode.ExtensionContext, panel: vscode.WebviewPanel, userMessage: string, aiMessageId: string): Promise<void> {
     try {
         const config = getConfiguration();
-        const conversationContext = context.globalState.get<any[]>('openaiConversationContext') || [];
+        let conversationContext = context.globalState.get<any[]>('openaiConversationContext') || [];
+
         const client = new OpenAI({
             apiKey: config.openaiApiKey,
+            baseURL: config.openaiUrl,
         });
+
+        conversationContext = conversationContext.filter(message => message.role && message.content);
 
         conversationContext.push({ role: 'user', content: userMessage });
         // model: "gpt-4o-mini-2024-07-18",
@@ -196,16 +200,19 @@ export async function sendOpenAIRequest(context: vscode.ExtensionContext, panel:
             stream: true,
         });
 
+        let result = '';
         for await (const chunk of response) {
             if (chunk.choices && chunk.choices.length > 0) {
                 const aiMessage = chunk.choices[0].delta;
                 if (aiMessage.content) {
-                    conversationContext.push(aiMessage);
-                    context.globalState.update('openaiConversationContext', conversationContext);
-                    panel.webview.postMessage({ command: 'outputText', text: aiMessage.content, aiMessageId: aiMessageId });
+                    result += aiMessage.content;
+                    panel.webview.postMessage({ command: 'outputText', text: result, aiMessageId: aiMessageId });
                 }
             }
         }
+
+        conversationContext.push({ role: 'assistant', content: result });
+        context.globalState.update('openaiConversationContext', conversationContext);
     } catch (error) {
         console.error('Failed to fetch from OpenAI API:', error);
     }

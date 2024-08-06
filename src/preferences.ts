@@ -4,7 +4,7 @@ import * as vscode from 'vscode';
 export function getConfiguration() {
     const config = vscode.workspace.getConfiguration('ai-context-manager');
     const openaiOn = config.get<boolean>('openai.on', false);
-    const openaiUrl = config.get<string>('openai.url', '');
+    const openaiUrl = config.get<string>('openai.url', 'https://api.openai.com/v1');
     const openaiApiKey = config.get<string>('openai.apiKey', '');
     const openaiModel = config.get<string>('openai.model', '');
     const openaiTemperature = config.get<number>('openai.temperature', 0.2);
