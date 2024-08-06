@@ -103,7 +103,6 @@ export function registerLaunchCommand(context: vscode.ExtensionContext) {
                             const prompt = await renderPromptTemplate(context, treeDataForPrompt, message.text);
 
                             console.log('Prompt:', prompt);
-                            let responseText = '';
                             let speaker = '';
                             if (config.ollamaOn) {
                                 await sendOllamaRequest(context, panel, prompt, message.aiMessageId);
