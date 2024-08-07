@@ -225,3 +225,48 @@ html {
 .copy-button:hover {
     background-color: #005f9e;
 }
+
+/* main page control buttons */
+.button-container {
+    display: flex;
+    /* Use flexbox for horizontal layout */
+    justify-content: space-between;
+    /* Space between buttons */
+    margin-bottom: 10px;
+    /* Space below the button container */
+}
+
+.button {
+    background-color: #005f8a;
+    /* Darker, more muted blue */
+    color: white;
+    /* Text color */
+    border: none;
+    /* Remove border */
+    border-radius: 4px;
+    /* Rounded corners */
+    padding: 10px 15px;
+    /* Padding for better touch targets */
+    margin: 0 5px;
+    /* Space between buttons */
+    cursor: pointer;
+    /* Pointer cursor on hover */
+    font-size: 16px;
+    /* Font size */
+    transition: background-color 0.3s;
+    /* Smooth background color transition */
+    flex: 1;
+    /* Allow buttons to grow equally */
+    text-align: center;
+    /* Center text */
+}
+
+.button:hover {
+    background-color: #004a6d;
+    /* Darker shade on hover */
+}
+
+.button:active {
+    background-color: #003c54;
+    /* Even darker shade when active */
+}
