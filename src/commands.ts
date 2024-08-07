@@ -124,6 +124,16 @@ export function registerLaunchCommand(context: vscode.ExtensionContext) {
                                 panel.webview.postMessage({ command: 'outputText', text: 'No AI service is enabled.', aiMessageId: message.aiMessageId });
                             }
                             break;
+                        case 'clearConversation':
+                            // Clear OpenAI conversation context
+                            context.globalState.update('openaiConversationContext', []);
+
+                            // Clear Ollama conversation context
+                            context.globalState.update('ollamaConversationContext', '');
+
+                            // Optionally, you can send a message back to the webview to confirm the action
+                            panel.webview.postMessage({ command: 'outputText', text: 'Conversation cleared.', aiMessageId: 'system-message' });
+                            break;
                         case 'toggleItem':
                             const dataManager = await DataManager.getInstance();
                             await dataManager.setItemEnabled(message.category, message.item, message.enabled);

@@ -49,6 +49,15 @@ document.getElementById('chatInput').addEventListener('keypress', (e) => {
     }
 });
 
+document.getElementById('clear-conversation-btn').addEventListener('click', () => {
+    // Send a message to the extension to clear the conversation
+    vscode.postMessage({ command: 'clearConversation' });
+
+    // Clear the output area
+    const outputArea = document.getElementById('outputArea');
+    outputArea.innerHTML = ''; // Clear the output content
+});
+
 // Handle messages sent from the extension
 window.addEventListener('message', event => {
     const message = event.data;

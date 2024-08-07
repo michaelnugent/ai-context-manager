@@ -15,7 +15,7 @@
 //  -add file tree to context
 // -clear everything, start fresh button
 // -refactor inference calls to avoid prompt/memory duplication
-// -support for other openai endpoints
+// -support for other openai endpointst
 
 // STRETCH:
 // -Add needle in haystack/token recommendations for each model
