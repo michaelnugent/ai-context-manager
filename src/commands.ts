@@ -107,16 +107,15 @@ export function registerLaunchCommand(context: vscode.ExtensionContext) {
                             treeDataForPrompt = await gatherDataForPrompt(treeDataForPrompt);
                             console.log('Tree data for prompt complete');
 
-                            const prompt = await renderPromptTemplate(context, treeDataForPrompt, message.text);
-
-                            console.log('Prompt:', prompt);
                             let speaker = '';
                             if (config.ollamaOn) {
-                                await sendOllamaRequest(context, panel, prompt, message.aiMessageId);
+                                console.log('Sending Ollama request');
+                                await sendOllamaRequest(context, panel, treeDataForPrompt, message);
                                 speaker = 'Ollama';
                             }
                             else if (config.openaiOn) {
-                                await sendOpenAIRequest(context, panel, prompt, message.aiMessageId);
+                                console.log('Sending OpenAI request');
+                                await sendOpenAIRequest(context, panel, treeDataForPrompt, message);
                                 speaker = 'OpenAI';
                             }
                             else {

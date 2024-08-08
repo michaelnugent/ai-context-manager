@@ -179,23 +179,30 @@ export async function countTokensInFile(filePath: string): Promise<number> {
 
 // AI calls
 
-export async function sendOpenAIRequest(context: vscode.ExtensionContext, panel: vscode.WebviewPanel, userMessage: string, aiMessageId: string): Promise<void> {
+export async function sendOpenAIRequest(context: vscode.ExtensionContext, panel: vscode.WebviewPanel, treeDataForPrompt: any, message: any): Promise<void> {
     try {
         const config = getConfiguration();
         let conversationContext = context.globalState.get<any[]>('openaiConversationContext') || [];
+
+        const prompt = await renderPromptTemplate(context, treeDataForPrompt, message.text);
 
         const client = new OpenAI({
             apiKey: config.openaiApiKey,
             baseURL: config.openaiUrl,
         });
 
+        // The prompt contains the entire huge multi-file context.  Don't add that to every message
+        // and explode token count.  Instead add only the message and append the prompt to the
+        // current message.  Since the AI results are also included, it may have memories of
+        // previous files if they've been removed from the context.
         conversationContext = conversationContext.filter(message => message.role && message.content);
+        let apicontext: any[] = conversationContext.concat([{ role: 'user', content: prompt }]);
+        conversationContext.push({ role: 'user', content: message.text });
 
-        conversationContext.push({ role: 'user', content: userMessage });
         // model: "gpt-4o-mini-2024-07-18",
         const response = await client.chat.completions.create({
             model: config.openaiModel,
-            messages: conversationContext,
+            messages: apicontext,
             temperature: 0.2,
             stream: true,
         });
@@ -206,7 +213,7 @@ export async function sendOpenAIRequest(context: vscode.ExtensionContext, panel:
                 const aiMessage = chunk.choices[0].delta;
                 if (aiMessage.content) {
                     result += aiMessage.content;
-                    panel.webview.postMessage({ command: 'outputText', text: result, aiMessageId: aiMessageId });
+                    panel.webview.postMessage({ command: 'outputText', text: result, aiMessageId: message.aiMessageId });
                 }
             }
         }
@@ -218,14 +225,16 @@ export async function sendOpenAIRequest(context: vscode.ExtensionContext, panel:
     }
 }
 
-export async function sendOllamaRequest(context: vscode.ExtensionContext, panel: vscode.WebviewPanel, userMessage: string, aiMessageId: string): Promise<void> {
+export async function sendOllamaRequest(context: vscode.ExtensionContext, panel: vscode.WebviewPanel, treeDataForPrompt: any, message: any): Promise<void> {
     try {
         const config = getConfiguration();
-        // http://arown.illuminatus.org:3101/api/generate
 
+        const prompt = await renderPromptTemplate(context, treeDataForPrompt, message.text);
+
+        // http://arown.illuminatus.org:3101/api/generate
         const requestBody: any = {
             model: config.ollamaModel,
-            prompt: userMessage,
+            prompt: prompt,
             stream: true,
         };
         const conversationContext = context.globalState.get<string>('ollamaConversationContext');
@@ -261,7 +270,7 @@ export async function sendOllamaRequest(context: vscode.ExtensionContext, panel:
                     const json = JSON.parse(chunk);
                     if (json.response) {
                         result += json.response;
-                        panel.webview.postMessage({ command: 'outputText', text: result, aiMessageId: aiMessageId });
+                        panel.webview.postMessage({ command: 'outputText', text: result, aiMessageId: message.aiMessageId });
                     }
                 } catch (e) {
                     console.error('Failed to parse chunk:', e);

@@ -1,9 +1,14 @@
 import * as assert from 'assert';
 import { DataManager } from '../datamanager';
+import mock from 'mock-fs';
 
 suite('DataManager Test Suite', () => {
 
     setup(async () => {
+        mock({
+            'TestItem': 'This is a test item file.' // Mock the TestItem file
+        });
+
         const dataManager = await DataManager.getInstance();
         // Reset the data by parsing an empty JSON object
         await dataManager.fromJson('{}');
@@ -207,6 +212,28 @@ suite('DataManager Test Suite', () => {
         await dataManager.addItem('TestCategory', 'TestItem');
         await dataManager.rmItem('TestCategory', 'TestItem');
         assert.strictEqual(eventTriggered, true, 'dataChanged event should be triggered when item is removed');
+    });
+
+    test('Set item enabled status', async () => {
+        const dataManager = await DataManager.getInstance();
+
+        // Setup: Add a category and an item
+        await dataManager.addCategory('TestCategory');
+        await dataManager.addItem('TestCategory', 'TestItem');
+
+        // Initially, the item should be enabled
+        let isEnabled = await dataManager.isItemEnabled('TestCategory', 'TestItem');
+        assert.strictEqual(isEnabled, true, 'Item should be enabled initially');
+
+        // Disable the item
+        await dataManager.setItemEnabled('TestCategory', 'TestItem', false);
+        isEnabled = await dataManager.isItemEnabled('TestCategory', 'TestItem');
+        assert.strictEqual(isEnabled, false, 'Item should be disabled');
+
+        // Enable the item again
+        await dataManager.setItemEnabled('TestCategory', 'TestItem', true);
+        isEnabled = await dataManager.isItemEnabled('TestCategory', 'TestItem');
+        assert.strictEqual(isEnabled, true, 'Item should be enabled again');
     });
 
 });

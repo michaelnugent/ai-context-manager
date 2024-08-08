@@ -45,7 +45,22 @@ document.getElementById('sendButton').addEventListener('click', () => {
 
 document.getElementById('chatInput').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
-        document.getElementById('sendButton').click();
+        if (e.shiftKey) {
+            // If Shift + Enter is pressed, insert a newline
+            const input = document.getElementById('chatInput');
+            const start = input.selectionStart;
+            const end = input.selectionEnd;
+
+            // Insert a newline at the cursor position
+            input.value = input.value.substring(0, start) + '\n' + input.value.substring(end);
+            // Move the cursor to the new position
+            input.selectionStart = input.selectionEnd = start + 1;
+            e.preventDefault(); // Prevent the default action (form submission)
+        } else {
+            // If only Enter is pressed, send the message
+            document.getElementById('sendButton').click();
+            e.preventDefault(); // Prevent the default action (form submission)
+        }
     }
 });
 
