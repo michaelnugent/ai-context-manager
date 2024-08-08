@@ -17,7 +17,6 @@ export async function handleIndexCommand(panel: vscode.WebviewPanel, extensionPa
 
     if (!document) {
         vscode.window.showErrorMessage(`Failed to open the document: ${filepath}`);
-        // TODO valid return value
         return { "language": "none", "symbols": [] };
     }
 

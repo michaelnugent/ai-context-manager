@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as ejs from 'ejs';
 import { DataManager } from './datamanager';
 import { handleIndexCommand } from './handlers';
-import { countTokensInFile, gatherDataForPrompt, renderPromptTemplate, sendOllamaRequest, sendOpenAIRequest } from './utils';
+import { countTokensInFile, gatherDataForPrompt, sendOllamaRequest, sendOpenAIRequest } from './utils';
 import { getConfiguration } from './preferences';
 
 export async function initializeDataManager() {
@@ -121,17 +121,16 @@ export function registerLaunchCommand(context: vscode.ExtensionContext) {
                             else {
                                 console.error('No AI service is enabled');
                                 panel.webview.postMessage({ command: 'outputText', text: 'No AI service is enabled.', aiMessageId: message.aiMessageId });
+                                vscode.window.showInformationMessage('No AI service is enabled, please check the config.');
                             }
                             break;
                         case 'clearConversation':
                             // Clear OpenAI conversation context
                             context.globalState.update('openaiConversationContext', []);
-
                             // Clear Ollama conversation context
                             context.globalState.update('ollamaConversationContext', '');
-
-                            // Optionally, you can send a message back to the webview to confirm the action
-                            panel.webview.postMessage({ command: 'outputText', text: 'Conversation cleared.', aiMessageId: 'system-message' });
+                            // Be loud
+                            vscode.window.showInformationMessage('Conversation cleared.');
                             break;
                         case 'toggleItem':
                             const dataManager = await DataManager.getInstance();

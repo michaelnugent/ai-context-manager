@@ -293,13 +293,17 @@ export async function gatherDataForPrompt(treeData: any): Promise<any> {
         return {};
     }
 
+    const readFiles = new Set<string>();
+
     for (const category of Object.keys(treeData)) {
-        // console.log(`Category: ${category}`);
         if (treeData[category].items) {
             for (const item of Object.keys(treeData[category].items)) {
                 console.log(`Item: ${item}`);
-                if (treeData[category].items[item].metadata.enabled) {
+                // Check if the file has already been read
+                if (treeData[category].items[item].metadata.enabled && !readFiles.has(item)) {
+                    // Read the file and add it to the set
                     treeData[category].items[item].content = await readFileContents(item);
+                    readFiles.add(item); // Mark this file as read
                 }
             }
         }

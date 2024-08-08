@@ -2,7 +2,7 @@
   "name": "ai-context-manager",
   "displayName": "AI Context Manager",
   "description": "Context Manager for AI Copilot",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "engines": {
     "vscode": "^1.89.1"
   },
@@ -19,16 +19,12 @@
   "contributes": {
     "commands": [
       {
-        "command": "ai-context-manager.helloWorld",
-        "title": "Hello World"
-      },
-      {
         "command": "ai-context-manager.launch",
         "title": "Launch AI Context Manager"
       },
       {
         "command": "ai-context-manager.addToContext",
-        "title": "Add files to context"
+        "title": "Add files to AI context"
       },
       {
         "command": "ai-context-manager.openSettings",
@@ -39,20 +35,18 @@
       "explorer/context": [
         {
           "command": "ai-context-manager.addToContext",
-          "group": "navigation"
+          "group": "1_ai-context-manager"
         }
       ],
       "editor/context": [
         {
           "command": "ai-context-manager.launch",
           "when": "editorTextFocus",
-          "group": "navigation"
-        }
-      ],
-      "extension/context": [
+          "group": "1_ai-context-manager"
+        },
         {
-          "command": "ai-context-manager.openSettings",
-          "group": "navigation"
+          "command": "ai-context-manager.addToContext",
+          "group": "1_ai-context-manager"
         }
       ]
     },

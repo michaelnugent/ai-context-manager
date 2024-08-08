@@ -5,14 +5,12 @@
 // -Prettier - better design overall
 //  -dark mode
 //  -better icons
-//  -edit previous conversation in place
 // -testing
 //  -figure out test coverage
 //  -add more tests
-//  -add file tree to context
-// -clear everything, start fresh button
-// -refactor inference calls to avoid prompt/memory duplication
-// -support for other openai endpointst
+// -add file tree to context
+// -improve prompt
+// -multiline input if it contains a \n
 
 // STRETCH:
 // -Add needle in haystack/token recommendations for each model
@@ -47,17 +45,8 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "ai-context-manager" is now active!');
-
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('ai-context-manager.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from AI Context Manager!');
-	});
-	context.subscriptions.push(disposable);
+	console.log('"ai-context-manager" activate');
+	vscode.window.showInformationMessage('Ready to argue with your code!');
 
 	registerLaunchCommand(context);
 
