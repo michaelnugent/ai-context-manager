@@ -1,3 +1,5 @@
+/* Copyright 2024 Michael Nugent */
+
 import * as assert from 'assert';
 import { DataManager } from '../datamanager';
 import mock from 'mock-fs';

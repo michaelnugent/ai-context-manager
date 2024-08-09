@@ -1,3 +1,5 @@
+/* Copyright 2024 Michael Nugent */
+
 import * as fs from 'fs';
 
 import { EventEmitter } from 'events';

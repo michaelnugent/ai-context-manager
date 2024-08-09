@@ -1,3 +1,5 @@
+/* Copyright 2024 Michael Nugent */
+
 import * as vscode from 'vscode';
 import * as path from 'path';
 import ejs from 'ejs';
@@ -174,5 +176,4 @@ export async function renderPromptTemplate(context: vscode.ExtensionContext, tre
         });
     });
 }
-
 // end AI calls

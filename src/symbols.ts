@@ -1,3 +1,5 @@
+/* Copyright 2024 Michael Nugent */
+
 import * as vscode from 'vscode';
 import { sleep } from './utils';
 

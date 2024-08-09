@@ -1,3 +1,5 @@
+/* Copyright 2024 Michael Nugent */
+
 import * as https from 'https';
 import * as cheerio from 'cheerio';
 import { getConfiguration } from './preferences';

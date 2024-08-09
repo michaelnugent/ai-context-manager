@@ -41,6 +41,7 @@
 // -Set up github
 // -Set up CI/CD in github repo, push load repo
 
+/* Copyright 2024 Michael Nugent */
 
 import * as vscode from 'vscode';
 import { initializeDataManager, registerLaunchCommand } from './commands';

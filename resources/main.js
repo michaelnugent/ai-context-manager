@@ -1,3 +1,5 @@
+/* Copyright 2024 Michael Nugent */
+
 const vscode = acquireVsCodeApi();
 
 document.getElementById('indexButton').addEventListener('click', () => {
