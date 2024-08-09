@@ -12,6 +12,7 @@ export function getConfiguration() {
     const ollamaUrl = config.get<string>('ollama.url', 'http://localhost:11434/api/generate');
     const ollamaModel = config.get<string>('ollama.model', '');
     const ollamaTemperature = config.get<number>('ollama.temperature', 0.2);
+    const webScrapeClient = config.get<string>('webScrapeClient', 'internal');
 
     return {
         openaiOn,
@@ -22,7 +23,8 @@ export function getConfiguration() {
         ollamaOn,
         ollamaUrl,
         ollamaModel,
-        ollamaTemperature
+        ollamaTemperature,
+        webScrapeClient,
     };
 }
 

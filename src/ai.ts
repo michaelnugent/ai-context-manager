@@ -4,7 +4,7 @@ import ejs from 'ejs';
 
 import { getConfiguration } from './preferences';
 import { readFileContents } from './utils';
-import { findHashedUrls, processUrls } from './web';
+import { findHashedUrls, processUrlsInternal } from './web';
 import { OpenAI } from 'openai';
 
 
@@ -158,7 +158,7 @@ export async function renderPromptTemplate(context: vscode.ExtensionContext, tre
     if (hashedUrls.length > 0) {
         console.log(`Found URLs: ${hashedUrls.join(', ')}`);
         // webdata structure should be [{url: 'https://example.com', text: '...'}, ...]
-        webdata = await processUrls(hashedUrls);
+        webdata = await processUrlsInternal(hashedUrls);
     }
 
     const templatePath = path.join(context.extensionPath, 'resources', 'prompt.ejs');

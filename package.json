@@ -106,6 +106,20 @@
           "default": 0.2,
           "description": "ollama API Temperature",
           "scope": "machine"
+        },
+        "ai-context-manager.webScrapeClient": {
+          "type": "string",
+          "default": "internal",
+          "description": "Select the web scraping client",
+          "scope": "machine",
+          "enum": [
+            "internal",
+            "jina"
+          ],
+          "enumDescriptions": [
+            "Use the internal web scraping client.",
+            "Use the Jina web scraping client."
+          ]
         }
       }
     }

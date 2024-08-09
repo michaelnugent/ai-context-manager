@@ -1,5 +1,6 @@
 import * as https from 'https';
 import * as cheerio from 'cheerio';
+import { getConfiguration } from './preferences';
 
 // Function to download a web page and return the page data
 export async function downloadWebPage(url: string): Promise<string> {
@@ -10,6 +11,34 @@ export async function downloadWebPage(url: string): Promise<string> {
             // Check for HTTP response status
             if (response.statusCode !== 200) {
                 reject(new Error(`Failed to get '${url}' (${response.statusCode})`));
+                return;
+            }
+
+            // Collect data chunks
+            response.on('data', (chunk) => {
+                data += chunk;
+            });
+
+            // Resolve the promise when the response ends
+            response.on('end', () => {
+                resolve(data);
+            });
+        }).on('error', (err) => {
+            reject(err);
+        });
+    });
+}
+
+// Function to retrieve data from Jina for a given URL
+async function fetchFromJina(url: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+        const jinaUrl = `https://r.jina.ai/${encodeURIComponent(url)}`; // Encode the URL for safe transmission
+        https.get(jinaUrl, (response) => {
+            let data = '';
+
+            // Check for HTTP response status
+            if (response.statusCode !== 200) {
+                reject(new Error(`Failed to get '${jinaUrl}' (${response.statusCode})`));
                 return;
             }
 
@@ -86,7 +115,7 @@ export async function stripHtmlTags(html: string, url: string): Promise<string> 
 }
 
 // Function to process a list of URLs in parallel
-export async function processUrls(urls: string[]): Promise<{ url: string; text: string }[]> {
+export async function processUrlsInternal(urls: string[]): Promise<{ url: string; text: string }[]> {
     const results = await Promise.all(urls.map(async (url) => {
         try {
             const htmlContent = await downloadWebPage(url);
@@ -101,4 +130,35 @@ export async function processUrls(urls: string[]): Promise<{ url: string; text: 
     }));
 
     return results; // Return the array of results
+}
+
+// Function to process a list of URLs using Jina in parallel
+export async function processUrlsJina(urls: string[]): Promise<{ url: string; text: string }[]> {
+    const results = await Promise.all(urls.map(async (url) => {
+        try {
+            const jinaResponse = await fetchFromJina(url);
+            return { url, text: jinaResponse }; // Return the structured object with Jina response
+        } catch (error) {
+            // Ensure error is of type Error
+            const errorMessage = (error instanceof Error) ? error.message : 'Unknown error';
+            console.error(`Error processing ${url} with Jina:`, error);
+            return { url, text: `Error: ${errorMessage}` }; // Handle errors gracefully
+        }
+    }));
+
+    return results; // Return the array of results
+}
+
+// Function to process a list of URLs based on the web scraping client configuration
+export async function processUrls(urls: string[]): Promise<{ url: string; text: string }[]> {
+    const config = getConfiguration(); // Get the configuration settings
+    const webScrapeClient = config.webScrapeClient; // Retrieve the web scraping client setting
+
+    if (webScrapeClient === 'internal') {
+        return await processUrlsInternal(urls); // Call the internal web scraping function
+    } else if (webScrapeClient === 'jina') {
+        return await processUrlsJina(urls); // Call the Jina web scraping function
+    } else {
+        throw new Error(`Unknown web scraping client: ${webScrapeClient}`); // Handle unexpected values
+    }
 }
