@@ -1,4 +1,8 @@
 //
+// BUGS:
+// -user input box loses text when it is hidden and shown again
+// -clearing chat history and navigating away and back ressurrects the chat buffer
+
 // TODO:
 // -Subtotal total estimate for datatree, deduped
 // -Total tokens for subtotal + user input + previous conversation
@@ -11,6 +15,7 @@
 // -add file tree to context
 // -improve prompt
 // -multiline input if it contains a \n
+//  -flex to 5 lines max
 
 // STRETCH:
 // -Add needle in haystack/token recommendations for each model

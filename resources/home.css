@@ -59,7 +59,8 @@ html {
     white-space: pre-wrap;
     font-family: Consolas, Monaco, 'Courier New', Courier, monospace;
     box-sizing: border-box;
-    height: calc(100% - 250px);
+    flex: 1;
+    /* Allow the output area to grow */
     padding: 10px;
     background-color: #2e2e2e;
     /* Dark background for the output area */

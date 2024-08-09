@@ -230,13 +230,14 @@ function calculateCategoryTokenCount(category) {
 function adjustOutputArea() {
     const treeView = document.getElementById('treeView');
     const outputArea = document.getElementById('outputArea');
+
+    // Use flexbox to control the layout
     if (treeView.style.display === 'none') {
-        outputArea.style.height = 'calc(100% - 50px)'; // Adjust height accordingly
+        outputArea.style.flex = '1'; // Take full height when tree view is hidden
     } else {
-        outputArea.style.height = 'calc(100% - 250px)'; // Adjust height accordingly
+        outputArea.style.flex = '3'; // Adjust the flex value when tree view is visible
     }
 }
-
 function storeOutputData(data) {
     vscode.setState({ outputData: data });
 }
