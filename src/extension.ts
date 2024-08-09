@@ -10,6 +10,9 @@
 //  -add more tests
 // -add file tree to context
 // -improve prompt
+// -get specific url
+//  -lightweight web caching
+//  -web token count / tree category
 
 // STRETCH:
 // -Add needle in haystack/token recommendations for each model
@@ -21,8 +24,6 @@
 // -Can reference web pages
 // -Can reference DB data
 // -web search
-// -get specific url
-
 
 // ROLLOUT:
 // -figure out how to package extensions

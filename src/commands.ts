@@ -3,8 +3,9 @@ import * as path from 'path';
 import * as ejs from 'ejs';
 import { DataManager } from './datamanager';
 import { handleIndexCommand } from './handlers';
-import { countTokensInFile, gatherDataForPrompt, sendOllamaRequest, sendOpenAIRequest } from './utils';
+import { countTokensInFile } from './utils';
 import { getConfiguration } from './preferences';
+import { gatherDataForPrompt, sendOllamaRequest, sendOpenAIRequest } from './ai';
 
 export async function initializeDataManager() {
     try {

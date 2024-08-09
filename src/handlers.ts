@@ -1,7 +1,8 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import { DataManager } from './datamanager';
-import { getFileMetadata, getReferencesFromSymbols, findFilesInSameDirectory, countTokensInFile } from './utils';
+import { getFileMetadata, findFilesInSameDirectory, countTokensInFile } from './utils';
+import { getReferencesFromSymbols } from './symbols';
 
 // handlers
 
