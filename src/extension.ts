@@ -1,7 +1,4 @@
 //
-// BUGS:
-// -clearing chat history and navigating away and back ressurrects the chat buffer
-
 // TODO:
 // -Subtotal total estimate for datatree, deduped
 // -Total tokens for subtotal + user input + previous conversation

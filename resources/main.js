@@ -77,6 +77,9 @@ document.getElementById('clear-conversation-btn').addEventListener('click', () =
     // Clear the output area
     const outputArea = document.getElementById('outputArea');
     outputArea.innerHTML = ''; // Clear the output content
+
+    // Clear the output data in the VS Code state
+    storeOutputData(''); // Store empty data to clear the state
 });
 
 // Handle messages sent from the extension
