@@ -179,28 +179,32 @@ function updateTreeView(treeData) {
             const itemDiv = document.createElement('div');
             itemDiv.classList.add('tree-item');
 
+            // enable checkbox
             const itemCheckbox = document.createElement('input');
             itemCheckbox.type = 'checkbox';
             itemCheckbox.id = `enable-item-${item}`;
             itemCheckbox.checked = treeData[category].items[item].metadata.enabled;
             itemDiv.appendChild(itemCheckbox);
 
-            const itemLabel = document.createElement('label');
-            itemLabel.htmlFor = `enable-item-${item}`;
-            itemLabel.textContent = item;
-            itemDiv.appendChild(itemLabel);
+            // remove button
+            const itemRemoveBtn = document.createElement('span');
+            itemRemoveBtn.classList.add('remove-btn');
+            itemRemoveBtn.dataset.id = item;
+            itemRemoveBtn.textContent = '❌';
+            itemDiv.appendChild(itemRemoveBtn);
 
+            // token count
             const itemTokenCount = document.createElement('span');
             itemTokenCount.classList.add('token-count');
             itemTokenCount.id = `item-token-count-${category}-${item}`;
             itemTokenCount.textContent = `(~${treeData[category].items[item].metadata.tokenCount} tokens)`;
             itemDiv.appendChild(itemTokenCount);
 
-            const itemRemoveBtn = document.createElement('span');
-            itemRemoveBtn.classList.add('remove-btn');
-            itemRemoveBtn.dataset.id = item;
-            itemRemoveBtn.textContent = '❌';
-            itemDiv.appendChild(itemRemoveBtn);
+            // label
+            const itemLabel = document.createElement('label');
+            itemLabel.htmlFor = `enable-item-${item}`;
+            itemLabel.textContent = item;
+            itemDiv.appendChild(itemLabel);
 
             categoryContent.appendChild(itemDiv);
 

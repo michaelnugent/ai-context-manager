@@ -1,4 +1,7 @@
 //
+// BUGS:
+// -"undefined" appears in input and output boxes when it has no data, initialize to ''
+
 // TODO:
 // -Subtotal total estimate for datatree, deduped
 // -Total tokens for subtotal + user input + previous conversation
@@ -23,6 +26,11 @@
 // -Can reference DB data
 // -web search
 // -add hightligted code to context / token count / category
+// -git integration
+// -github integration
+//  -read files
+//  -read issues
+//  -read unit test results
 
 // ROLLOUT:
 // -figure out how to package extensions
