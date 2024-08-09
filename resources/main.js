@@ -44,28 +44,31 @@ document.getElementById('sendButton').addEventListener('click', () => {
 });
 
 document.getElementById('chatInput').addEventListener('input', (e) => {
+    // Reset height to allow for shrinkage
+    chatInput.style.height = 'auto';
+
+    // Calculate the new height
+    const newHeight = Math.min(chatInput.scrollHeight, 120); // Limit to max height
+    chatInput.style.height = `${newHeight}px`;
+
     // Store the current input value in the VS Code state
     vscode.setState({ chatInputValue: e.target.value });
-});
 
+    // Adjust output area based on the height of the input
+    adjustOutputArea();
+});
 
 document.getElementById('chatInput').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
         if (e.shiftKey) {
             // If Shift + Enter is pressed, insert a newline
-            const input = document.getElementById('chatInput');
-            const start = input.selectionStart;
-            const end = input.selectionEnd;
-
-            // Insert a newline at the cursor position
-            input.value = input.value.substring(0, start) + '\n' + input.value.substring(end);
-            // Move the cursor to the new position
-            input.selectionStart = input.selectionEnd = start + 1;
-            e.preventDefault(); // Prevent the default action (form submission)
+            e.preventDefault(); // Prevent form submission
+            chatInput.value += '\n'; // Add a newline
+            chatInput.dispatchEvent(new Event('input')); // Trigger input event to resize
         } else {
             // If only Enter is pressed, send the message
             document.getElementById('sendButton').click();
-            e.preventDefault(); // Prevent the default action (form submission)
+            e.preventDefault(); // Prevent form submission
         }
     }
 });
@@ -247,6 +250,7 @@ function adjustOutputArea() {
         outputArea.style.flex = '3'; // Adjust the flex value when tree view is visible
     }
 }
+
 function storeOutputData(data) {
     vscode.setState({ outputData: data });
 }

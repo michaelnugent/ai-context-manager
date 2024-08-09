@@ -10,8 +10,6 @@
 //  -add more tests
 // -add file tree to context
 // -improve prompt
-// -multiline input if it contains a \n
-//  -flex to 5 lines max
 
 // STRETCH:
 // -Add needle in haystack/token recommendations for each model

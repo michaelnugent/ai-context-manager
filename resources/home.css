@@ -100,7 +100,8 @@ html {
     left: 0;
     width: 100%;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
+    /* Align items to the start */
     padding: 10px;
     background-color: #f1f1f1;
     border-top: 1px solid #ccc;
@@ -118,6 +119,12 @@ html {
     /* Add margin to the right of the input */
     box-sizing: border-box;
     /* Add this to include padding in the width calculation */
+    overflow-y: hidden;
+    /* Hide the scrollbar initially */
+    max-height: 120px;
+    /* Maximum height for the textarea */
+    transition: height 0.2s;
+    /* Smooth transition for height change */
 }
 
 #sendButton {
