@@ -274,7 +274,7 @@ window.addEventListener('load', () => {
     // Retrieve and set the chat input value
     const state = vscode.getState();
     const chatInput = document.getElementById('chatInput');
-    chatInput.value = state ? state.chatInputValue : ''; // Restore input value
+    chatInput.value = state ? state.chatInputValue || '' : '';  // Restore input value
 });
 
 window.addEventListener('resize', adjustOutputArea);
