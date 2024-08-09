@@ -9,8 +9,9 @@
 //  -figure out test coverage
 //  -add more tests
 // -add file tree to context
-// -improve prompt
 // -web token count / tree category
+// -remove all items from catetory
+// -lightweight web cache
 
 // STRETCH:
 // -Add needle in haystack/token recommendations for each model
@@ -21,6 +22,7 @@
 // -Add copilot wrapper
 // -Can reference DB data
 // -web search
+// -add hightligted code to context / token count / category
 
 // ROLLOUT:
 // -figure out how to package extensions

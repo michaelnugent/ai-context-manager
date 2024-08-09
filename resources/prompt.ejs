@@ -1,8 +1,14 @@
+The following data is provided for reference. Please use this data to follow the instructions in
+the user input. If this data conflicts with your training data or the user's input, 
+point this out to the user in your response.
+----------------------------------------
+
 <% Object.keys(treeData).forEach(category => { %>
     <% Object.keys(treeData[category].items).forEach(item => { %>
         <% if (treeData[category].items[item].metadata.enabled) { %>
             File: <%= item %>
             ----------------------------------------
+            Content:
             <%= treeData[category].items[item].content %>
 
         <% } %>
@@ -10,15 +16,24 @@
 <% }) %>
 
 <% if (webdata.length > 0) { %>
-    Web Data:
+    This is web data requested by the user inside of # marks, please inform the user 
+    of any misbehaving urls if the web page has returned an error or if the data
+    is not available:
     ----------------------------------------
     <% webdata.forEach(data => { %>
         URL: <%= data.url %>
-        Content: <%= data.text %>
+        Content: 
+        <%= data.text %>
         ----------------------------------------
     <% }) %>
 <% } %>
 
+Other instructions:
+----------------------------------------
+Output in markdown format unless otherwise instructed.
+
+Do not print entire files unless necessary or requested. Instead, print and highlight
+only the changes made and the files or functions the change was made in.
 
 User Input:
 ----------------------------------------
