@@ -1,6 +1,5 @@
 //
 // BUGS:
-// -user input box loses text when it is hidden and shown again
 // -clearing chat history and navigating away and back ressurrects the chat buffer
 
 // TODO:

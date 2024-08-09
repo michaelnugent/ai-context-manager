@@ -43,6 +43,12 @@ document.getElementById('sendButton').addEventListener('click', () => {
     storeOutputData(outputArea.innerHTML);
 });
 
+document.getElementById('chatInput').addEventListener('input', (e) => {
+    // Store the current input value in the VS Code state
+    vscode.setState({ chatInputValue: e.target.value });
+});
+
+
 document.getElementById('chatInput').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
         if (e.shiftKey) {
@@ -253,6 +259,11 @@ window.addEventListener('load', () => {
     const outputArea = document.getElementById('outputArea');
     outputArea.innerHTML = retrieveOutputData();
     outputArea.scrollTop = outputArea.scrollHeight; // Scroll to the bottom
+
+    // Retrieve and set the chat input value
+    const state = vscode.getState();
+    const chatInput = document.getElementById('chatInput');
+    chatInput.value = state ? state.chatInputValue : ''; // Restore input value
 });
 
 window.addEventListener('resize', adjustOutputArea);
