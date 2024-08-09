@@ -13,8 +13,7 @@ export async function initializeDataManager() {
     try {
         const datamanager = await DataManager.getInstance();
         await datamanager.addCategory("By Request");
-        await datamanager.addCategory("By Reference");
-        await datamanager.addCategory("By Directory");
+        await datamanager.addCategory("Discovered");
     } catch (error) {
         console.error('Failed to initialize DataManager:', error);
     }

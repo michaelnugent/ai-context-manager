@@ -32,21 +32,20 @@ export async function handleIndexCommand(panel: vscode.WebviewPanel, extensionPa
     const references = await getReferencesFromSymbols(metadata.symbols, activeEditor.document);
     console.log('references:', references);
 
-    const refcat = "By Reference";
+    const refdis = "Discovered";
     for (const ref of references) {
         const tokens = await countTokensInFile(ref);
-        await datamanager.addItem(refcat, ref);
-        await datamanager.setTokenCount(refcat, ref, tokens);
+        await datamanager.addItem(refdis, ref);
+        await datamanager.setTokenCount(refdis, ref, tokens);
     }
 
     const dirfiles = await findFilesInSameDirectory(path.dirname(document.uri.fsPath));
     console.log('dirfiles:', dirfiles);
 
-    const dircat = "By Directory";
     for (const file of dirfiles) {
         const tokens = await countTokensInFile(file);
-        await datamanager.addItem(dircat, file);
-        await datamanager.setTokenCount(dircat, file, tokens);
+        await datamanager.addItem(refdis, file);
+        await datamanager.setTokenCount(refdis, file, tokens);
     }
 
     const dmj = await datamanager.asJson();
