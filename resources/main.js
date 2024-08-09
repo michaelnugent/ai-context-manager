@@ -262,7 +262,7 @@ function storeOutputData(data) {
 // Retrieve output data from VS Code state
 function retrieveOutputData() {
     const state = vscode.getState();
-    return state ? state.outputData : '';
+    return state ? state.outputData || '' : '';
 }
 
 // Restore output data on load
