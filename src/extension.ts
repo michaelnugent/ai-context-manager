@@ -10,9 +10,7 @@
 //  -add more tests
 // -add file tree to context
 // -improve prompt
-// -get specific url
-//  -lightweight web caching
-//  -web token count / tree category
+// -web token count / tree category
 
 // STRETCH:
 // -Add needle in haystack/token recommendations for each model
@@ -21,7 +19,6 @@
 // -edit code in place
 // -support tts and stt ("argue with your code")
 // -Add copilot wrapper
-// -Can reference web pages
 // -Can reference DB data
 // -web search
 
