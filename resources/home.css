@@ -148,7 +148,7 @@ html {
 /* Markdown styles */
 .markdown-body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    line-height: 1.5;
+    line-height: 1;
     color: #e0e0e0;
     /* Light text for better contrast */
 }
@@ -159,7 +159,7 @@ html {
 .markdown-body h4,
 .markdown-body h5,
 .markdown-body h6 {
-    margin: 1em 0 0.5em;
+    margin: 0.5em 0 0.5em;
     font-weight: bold;
     color: #ffffff;
     /* White text for headings */
@@ -202,7 +202,7 @@ html {
 .markdown-body ol {
     padding-left: 2em;
     margin: 0.1em 0;
-    line-height: 0.75;
+    line-height: 0.85;
 }
 
 .markdown-body table {

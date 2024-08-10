@@ -1,12 +1,10 @@
-//
 // BUGS:
-// -"undefined" appears in input and output boxes when it has no data, initialize to ''
+// -copy label is on entire output window instead of individual markdown code blocks
 
 // TODO:
 // -Subtotal total estimate for datatree, deduped
 // -Total tokens for subtotal + user input + previous conversation
 // -Prettier - better design overall
-//  -dark mode
 //  -better icons
 // -testing
 //  -figure out test coverage
@@ -17,16 +15,12 @@
 // -lightweight web cache
 
 // STRETCH:
-// -Add needle in haystack/token recommendations for each model
 // -Add drag and drop
 // -"Implement features from TODO list"
-// -edit code in place
-// -support tts and stt ("argue with your code")
 // -Add copilot wrapper
 // -Can reference DB data
 // -web search
 // -add hightligted code to context / token count / category
-// -git integration
 // -github integration
 //  -read files
 //  -read issues
