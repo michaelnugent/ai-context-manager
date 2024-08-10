@@ -2,6 +2,10 @@
 
 const vscode = acquireVsCodeApi();
 
+if (typeof marked === 'undefined') {
+    console.error('Marked is not defined. Please check the script loading order.');
+}
+
 document.getElementById('indexButton').addEventListener('click', () => {
     vscode.postMessage({ command: 'index' });
 });
@@ -121,6 +125,7 @@ window.addEventListener('message', event => {
                         console.error('Target div not found for id:', targetId);
                     }
                 });
+                hljs.highlightAll();
             }
             break;
         case 'updateTreeView':

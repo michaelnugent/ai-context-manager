@@ -201,7 +201,8 @@ html {
 .markdown-body ul,
 .markdown-body ol {
     padding-left: 2em;
-    margin: 0.5em 0;
+    margin: 0.1em 0;
+    line-height: 0.75;
 }
 
 .markdown-body table {
