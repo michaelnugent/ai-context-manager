@@ -78,7 +78,7 @@ html {
 }
 
 .user-message {
-    background-color: #1e88e5;
+    background-color: #005f8a;
     /* Darker blue for user messages */
     color: #ffffff;
     /* Light text for better contrast */
@@ -87,7 +87,7 @@ html {
 }
 
 .ai-message {
-    background-color: #ff9800;
+    background-color: #d69a22;
     /* Darker orange for AI responses */
     color: #000000;
     /* Dark text for better contrast */
