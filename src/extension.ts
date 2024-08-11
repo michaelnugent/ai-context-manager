@@ -3,28 +3,36 @@
 
 // TODO:
 // -Subtotal total estimate for datatree, deduped
-// -Total tokens for subtotal + user input + previous conversation
-// -Prettier - better design overall
-//  -better icons
 // -testing
 //  -figure out test coverage
 //  -add more tests
 // -add file tree to context
+//  -follow gitingore?
+//  -how to avoid library dirs?
+//  -just dirs?
+//  -max depth?
+//  -defined ignore per language?
+//   -pull this from github on the fly?
 // -web token count / tree category
 // -remove all items from catetory
 // -lightweight web cache
+//  -how to clear manually?  settings?  I kinda dont want another button
 
 // STRETCH:
 // -Add drag and drop
-// -"Implement features from TODO list"
-// -Add copilot wrapper
+// -"Implement tasks from TODO list"
+// -Add copilot wrapper for edit in place? Is this doable?
 // -Can reference DB data
 // -web search
-// -add hightligted code to context / token count / category
+// -add selected code to context / category
+// -token count
+//  -add selected code to token count
+//  -Total tokens for subtotal + user input + previous conversation
 // -github integration
 //  -read files
 //  -read issues
 //  -read unit test results
+// -something snippets?
 
 // ROLLOUT:
 // -figure out how to package extensions
