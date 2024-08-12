@@ -2,7 +2,7 @@
   "name": "ai-context-manager",
   "displayName": "AI Context Manager",
   "description": "Context Manager for AI Copilot",
-  "version": "0.0.24",
+  "version": "0.0.28",
   "engines": {
     "vscode": "^1.89.1"
   },
