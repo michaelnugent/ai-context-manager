@@ -3,7 +3,7 @@ name: Run Tests
 on:
   pull_request:
     branches:
-      - main  # Specify the branch you want to trigger the action on PRs
+      - main
 
 jobs:
   build:
@@ -16,10 +16,10 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '22.6.0'  # Updated to the latest Node.js version
+        node-version: '22.6.0'
 
     - name: Install dependencies
       run: npm install
 
     - name: Run tests
-      run: npm run test
+      run: xvfb-run -a npm run test
