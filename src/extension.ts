@@ -38,10 +38,6 @@
 // -figure out how to package extensions
 // -test install on another machine
 // -test installs across different platforms
-// -Write docs
-// -Apply best practices
-// -Set up github
-// -Set up CI/CD in github repo, push load repo
 
 /* Copyright 2024 Michael Nugent */
 
