@@ -43,8 +43,6 @@
 // -Set up github
 // -Set up CI/CD in github repo, push load repo
 
-// test PR
-
 /* Copyright 2024 Michael Nugent */
 
 import * as vscode from 'vscode';
