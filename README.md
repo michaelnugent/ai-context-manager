@@ -28,4 +28,4 @@ The context allows temp disabling of files and token counts so you have a rough 
 
 In the chat area enclosing a url as #https://raw.githubusercontent.com/michaelnugent/ai-context-manager/main/README.md# will attempt to fetch the content at that url and feed it into the context. The prompt instructs the AI to tell you if there was an error, but 🤷.
 
-Settings allow you to set up openai or ollama credentials and endpoints.  The default endpoint for openai is the official openai one. Ollama default to localhost.  You can also choose if you want to use jina.ai or the internal algorithm for pulling in web content.  Jina is cleaner,  non-private and can only see the internet. Sometimes the internal one can is sometimes smarter and can see local networks.
+Settings allow you to set up openai or ollama credentials and endpoints.  The default endpoint for openai is the official openai one. Ollama defaults to localhost.  You can also choose if you want to use jina.ai or the internal algorithm for pulling in web content.  Jina is cleaner,  non-private and can only see the internet. Sometimes the internal one is smarter and can see local networks.
