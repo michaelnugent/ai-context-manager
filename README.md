@@ -20,7 +20,7 @@ this and want to discover related files, you may be sad.
 
 ## How to
 
-Right clicking on an open file will allow you to bring up the context manager in the next panel to the right ( --> ).
+Right clicking on an open file will allow you to bring up the context manager in the next panel to the right (-->).
 
 Right clinking on an open file, file in the explorer or group of files in the explorer will allow you to add it to the context.
 
