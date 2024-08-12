@@ -6,13 +6,6 @@
 // -testing
 //  -figure out test coverage
 //  -add more tests
-// -add file tree to context
-//  -follow gitingore?
-//  -how to avoid library dirs?
-//  -just dirs?
-//  -max depth?
-//  -defined ignore per language?
-//   -pull this from github on the fly?
 // -web token count / tree category
 // -remove all items from catetory
 // -lightweight web cache
@@ -33,6 +26,13 @@
 //  -read issues
 //  -read unit test results
 // -something snippets?
+// -add file tree to context
+//  -follow gitingore?
+//  -how to avoid library dirs?
+//  -just dirs?
+//  -max depth?
+//  -defined ignore per language?
+//   -pull this from github on the fly?
 
 // ROLLOUT:
 // -figure out how to package extensions
