@@ -1,17 +1,14 @@
 // BUGS:
 // -copy label is on entire output window instead of individual markdown code blocks
 
-// TODO:
-// -Subtotal total estimate for datatree, deduped
-// -testing
-//  -figure out test coverage
-//  -add more tests
-// -web token count / tree category
-// -remove all items from catetory
-// -lightweight web cache
-//  -how to clear manually?  settings?  I kinda dont want another button
+// PREPRELEASE:
+// -Total estimate for all items, deduped
+// -remove all items from catetory, different color x?  bomb?  +hovertext?
+// -add better docs for each setting
+// -change red 'x'to end of line
+// -add command pallet item to add to docs
 
-// STRETCH:
+// POSTRELEASE:
 // -Add drag and drop
 // -"Implement tasks from TODO list"
 // -Add copilot wrapper for edit in place? Is this doable?
@@ -19,6 +16,7 @@
 // -web search
 // -add selected code to context / category
 // -token count
+//  -add previous conversation estimate to token count
 //  -add selected code to token count
 //  -Total tokens for subtotal + user input + previous conversation
 // -github integration
@@ -27,17 +25,18 @@
 //  -read unit test results
 // -something snippets?
 // -add file tree to context
+//  -web token count / tree category
 //  -follow gitingore?
 //  -how to avoid library dirs?
-//  -just dirs?
+//  -just specified dirs?
 //  -max depth?
 //  -defined ignore per language?
 //   -pull this from github on the fly?
+// -lightweight web cache
+//  -how to clear manually?  settings?  I kinda dont want another button
 
 // ROLLOUT:
-// -figure out how to package extensions
-// -test install on another machine
-// -test installs across different platforms
+// -github action to add to marketplace
 
 /* Copyright 2024 Michael Nugent */
 
@@ -52,7 +51,11 @@ export function activate(context: vscode.ExtensionContext) {
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
 	console.log('"ai-context-manager" activate');
-	vscode.window.showInformationMessage('Ready to argue with your code!');
+	vscode.window.showInformationMessage('AI Context Manager: Ready to argue with your code!');
+
+	context.subscriptions.push(vscode.commands.registerCommand('first-run', () => {
+		vscode.commands.executeCommand('ai-context-manager.openSettings');
+	}));
 
 	registerLaunchCommand(context);
 

@@ -193,13 +193,6 @@ function updateTreeView(treeData) {
             itemCheckbox.checked = treeData[category].items[item].metadata.enabled;
             itemDiv.appendChild(itemCheckbox);
 
-            // remove button
-            const itemRemoveBtn = document.createElement('span');
-            itemRemoveBtn.classList.add('remove-btn');
-            itemRemoveBtn.dataset.id = item;
-            itemRemoveBtn.textContent = '❌';
-            itemDiv.appendChild(itemRemoveBtn);
-
             // token count
             const itemTokenCount = document.createElement('span');
             itemTokenCount.classList.add('token-count');
@@ -212,6 +205,13 @@ function updateTreeView(treeData) {
             itemLabel.htmlFor = `enable-item-${item}`;
             itemLabel.textContent = item;
             itemDiv.appendChild(itemLabel);
+
+            // remove button
+            const itemRemoveBtn = document.createElement('span');
+            itemRemoveBtn.classList.add('remove-btn');
+            itemRemoveBtn.dataset.id = item;
+            itemRemoveBtn.textContent = '❌';
+            itemDiv.appendChild(itemRemoveBtn);
 
             categoryContent.appendChild(itemDiv);
 
