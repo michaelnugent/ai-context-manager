@@ -104,27 +104,10 @@ window.addEventListener('message', event => {
                 const markdownId = `${message.aiMessageId}-markdown`;
                 aiMessageDiv.innerHTML = `
                     <div id="${markdownId}" class="markdown-body">${cleanHtml}</div>
-                    <button class="copy-button" data-target="${markdownId}">Copy</button>
                 `;
                 const outputArea = document.getElementById('outputArea');
                 outputArea.scrollTop = outputArea.scrollHeight; // Scroll to the bottom
                 storeOutputData(outputArea.innerHTML); // Store the output data
-
-                // Add event listener for the copy button
-                aiMessageDiv.querySelector('.copy-button').addEventListener('click', function () {
-                    const targetId = this.getAttribute('data-target');
-                    const targetDiv = document.getElementById(targetId);
-                    if (targetDiv) {
-                        navigator.clipboard.writeText(targetDiv.innerText).then(() => {
-                            alert('Copied to clipboard');
-                            console.log('Text copied to clipboard:', targetDiv.innerText);
-                        }).catch(err => {
-                            console.error('Failed to copy text: ', err);
-                        });
-                    } else {
-                        console.error('Target div not found for id:', targetId);
-                    }
-                });
                 hljs.highlightAll();
             }
             break;
