@@ -1,12 +1,5 @@
-// BUGS:
-// -copy label is on entire output window instead of individual markdown code blocks
 
 // PREPRELEASE:
-// -Total estimate for all items, deduped
-// -remove all items from catetory, different color x?  bomb?  +hovertext?
-// -add better docs for each setting
-// -change red 'x'to end of line
-// -add command pallet item to add to docs
 
 // POSTRELEASE:
 // -Add drag and drop
@@ -18,7 +11,7 @@
 // -token count
 //  -add previous conversation estimate to token count
 //  -add selected code to token count
-//  -Total tokens for subtotal + user input + previous conversation
+//  -Total tokens for subtotal + user input + previous conversation + dedupe
 // -github integration
 //  -read files
 //  -read issues
@@ -34,6 +27,7 @@
 //   -pull this from github on the fly?
 // -lightweight web cache
 //  -how to clear manually?  settings?  I kinda dont want another button
+// -copy button per markdown window?
 
 // ROLLOUT:
 // -github action to add to marketplace
