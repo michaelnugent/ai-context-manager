@@ -154,6 +154,20 @@ export class DataManager {
         }
     }
 
+    public async removeAllItems(category: string): Promise<void> {
+        try {
+            if (!(category in this.data)) {
+                throw new Error(`Category '${category}' does not exist`);
+            }
+            // Clear all items in the specified category
+            this.data[category].items = {};
+            this.notifyChange(); // Notify listeners about the data change
+        } catch (error) {
+            console.error(`Failed to remove all items from category '${category}':`, error);
+            throw error;
+        }
+    }
+
     public async getItems(category: string): Promise<string[]> {
         try {
             if (!(category in this.data)) {

@@ -41,7 +41,8 @@ html {
 .remove-btn {
     color: red;
     cursor: pointer;
-    margin-left: 10px;
+    margin-left: auto;
+    margin-right: 10px;
 }
 
 .token-count {

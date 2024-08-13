@@ -175,6 +175,17 @@ function updateTreeView(treeData) {
         tokenCount.textContent = `(~${calculateCategoryTokenCount(treeData[category])} tokens)`;
         categoryHeader.appendChild(tokenCount);
 
+        const removeAllBtn = document.createElement('button');
+        removeAllBtn.textContent = '💣';
+        removeAllBtn.style.marginLeft = '10px';
+        removeAllBtn.style.backgroundColor = 'transparent';
+        removeAllBtn.style.border = 'none';
+        removeAllBtn.classList.add('remove-all-btn');
+        removeAllBtn.addEventListener('click', () => {
+            vscode.postMessage({ command: 'removeAllItems', category: category });
+        });
+        categoryHeader.appendChild(removeAllBtn);
+
         categoryDiv.appendChild(categoryHeader);
 
         const categoryContent = document.createElement('div');

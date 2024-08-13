@@ -8,7 +8,8 @@ suite('DataManager Test Suite', () => {
 
     setup(async () => {
         mock({
-            'TestItem': 'This is a test item file.' // Mock the TestItem file
+            'TestItem': 'This is a test item file.',
+            'TestItem2': 'This is a test item file 2.'
         });
 
         const dataManager = await DataManager.getInstance();
@@ -238,4 +239,21 @@ suite('DataManager Test Suite', () => {
         assert.strictEqual(isEnabled, true, 'Item should be enabled again');
     });
 
+    test('Remove all items from category', async () => {
+        const dataManager = await DataManager.getInstance();
+        await dataManager.addCategory('TestCategory');
+        await dataManager.addItem('TestCategory', 'TestItem');
+        await dataManager.addItem('TestCategory', 'TestItem2');
+
+        // Ensure items are added
+        let items = await dataManager.getItems('TestCategory');
+        assert.strictEqual(items.length, 2, 'There should be 2 items in the category before removal');
+
+        // Remove all items
+        await dataManager.removeAllItems('TestCategory');
+
+        // Check that items are removed
+        items = await dataManager.getItems('TestCategory');
+        assert.strictEqual(items.length, 0, 'There should be no items in the category after removal');
+    });
 });

@@ -157,6 +157,12 @@ export function registerLaunchCommand(context: vscode.ExtensionContext) {
                             const updatedTreeDataRemove = await dataManagerRemove.asJson();
                             panel.webview.postMessage({ command: 'updateTreeView', treeData: JSON.parse(updatedTreeDataRemove) });
                             break;
+                        case 'removeAllItems':
+                            const dataManagerRemoveAll = await DataManager.getInstance();
+                            await dataManagerRemoveAll.removeAllItems(message.category);
+                            const updatedTreeDataRemoveAll = await dataManagerRemoveAll.asJson();
+                            panel.webview.postMessage({ command: 'updateTreeView', treeData: JSON.parse(updatedTreeDataRemoveAll) });
+                            break;
                         default:
                             console.log('Unknown command:', message.command);
                     }
