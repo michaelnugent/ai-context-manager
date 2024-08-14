@@ -46,7 +46,8 @@ html {
 }
 
 .token-count {
-    margin-left: 10px;
+    margin-left: 2px;
+    margin-right: 3px;
     color: #666;
 }
 
