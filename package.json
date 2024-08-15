@@ -2,11 +2,11 @@
   "name": "ai-context-manager",
   "displayName": "AI Context Manager",
   "description": "Context Manager for AI Copilot",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "engines": {
     "vscode": "^1.89.1"
   },
-  "publisher": "illuminatus",
+  "publisher": "MichaelNugent",
   "repository": {
     "type": "git",
     "url": "https://github.com/michaelnugent/ai-context-manager.git"
